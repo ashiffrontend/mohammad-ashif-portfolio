@@ -58,4 +58,13 @@
   });
 
   window.toggleTheme = toggleTheme;
+  window.getPreferredTheme = getPreferredTheme;
+  window.applyTheme = applyTheme;
 })();
+
+export function toggleTheme() {
+  if (typeof window.toggleTheme === 'function') {
+    window.toggleTheme();
+  }
+}
+

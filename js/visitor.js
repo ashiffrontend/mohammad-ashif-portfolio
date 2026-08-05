@@ -81,6 +81,7 @@
     }, 30000);
   });
 
+  window.recordVisit = recordVisit;
   window.trackCustomEvent = function(eventName, extraData = {}) {
     const telemetry = {
       eventType: eventName,
@@ -102,3 +103,5 @@
     });
   };
 })();
+
+export const trackCustomEvent = window.trackCustomEvent;

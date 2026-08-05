@@ -2030,3 +2030,30 @@ window.deleteBlogPost = deleteBlogPost;
 window.openAddInvoiceModal = openAddInvoiceModal;
 window.markAllNotificationsRead = markAllNotificationsRead;
 
+export {
+  renderAdminDashboardViews,
+  openProjectModal,
+  deleteProject,
+  addSkillModal,
+  moveSkill,
+  deleteSkill,
+  addCertificateModal,
+  deleteCertificate,
+  addAchievementModal,
+  deleteAchievement,
+  addServiceModal,
+  deleteService,
+  toggleReplyStatus,
+  deleteMessage,
+  exportDataBackup,
+  importDataBackup,
+  resetWebsiteData,
+  openAddTestimonialModal,
+  toggleTestimonialApproval,
+  deleteTestimonial,
+  openAddBlogPostModal,
+  deleteBlogPost,
+  openAddInvoiceModal,
+  markAllNotificationsRead
+};
+

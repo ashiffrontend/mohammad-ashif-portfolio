@@ -165,3 +165,8 @@ function initAdminNavigation() {
     sidebar?.classList.toggle('open');
   });
 }
+
+window.checkAdminAuth = checkAdminAuth;
+window.initAdminNavigation = initAdminNavigation;
+
+export { checkAdminAuth, initAdminNavigation };

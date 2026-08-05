@@ -1,20 +1,6 @@
 /**
- * STORAGE ENGINE - LocalStorage Mock Database for Mohammad Ashif Portfolio
+ * STORAGE ENGINE - Database Client Cache for Mohammad Ashif Portfolio
  */
-
-/**
- * DEMO ADMIN CREDENTIALS
- * IMPORTANT SECURITY NOTE FOR PRODUCTION:
- * In a real production environment, admin authentication MUST be handled via 
- * server-side endpoints over HTTPS with encrypted passwords (e.g. bcrypt/Argon2) 
- * and HTTP-only session tokens or JWTs. Client-side credential comparison is 
- * strictly for offline/prototype demonstration purposes.
- */
-const DEMO_ADMIN_CREDENTIALS = {
-  email: 'mohdashif.dev@gmail.com',
-  password: '@Freelencing2026',
-  pin: 'ashif2026'
-};
 
 const STORAGE_KEYS = {
   PROJECTS: 'ashif_projects',
@@ -817,4 +803,7 @@ class LocalStorageEngine {
 
 const ashifStorage = new LocalStorageEngine();
 window.ashifStorage = ashifStorage;
-window.DEMO_ADMIN_CREDENTIALS = DEMO_ADMIN_CREDENTIALS;
+window.STORAGE_KEYS = STORAGE_KEYS;
+window.LocalStorageEngine = LocalStorageEngine;
+
+export { STORAGE_KEYS, LocalStorageEngine, ashifStorage };

@@ -1045,6 +1045,25 @@ function initScrollReveal() {
 window.openImageLightbox = openImageLightbox;
 window.selectServiceForContact = selectServiceForContact;
 window.showToast = showToast;
+window.openHireModal = openHireModal;
+window.closeHireModal = closeHireModal;
+window.renderAllSections = renderAllSections;
+window.handleLikeProject = handleLikeProject;
+window.toggleBookmarkProject = toggleBookmarkProject;
+window.shareProject = shareProject;
+window.openCaseStudyModal = openCaseStudyModal;
 
 window.addEventListener('ashif_profile_updated', () => renderAllSections());
 window.addEventListener('storage', () => renderAllSections());
+
+export {
+  initNavbarAndScroll,
+  initTypingEffect,
+  initParticleCanvas,
+  renderAllSections,
+  openHireModal,
+  closeHireModal,
+  showToast,
+  openImageLightbox,
+  selectServiceForContact
+};

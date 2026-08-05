@@ -21,3 +21,5 @@ function animateCounter(element, target, duration = 1500) {
 
 window.animateCounter = animateCounter;
 
+export { animateCounter };
+
