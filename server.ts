@@ -512,26 +512,19 @@ async function seedMongoDBData() {
 }
 
 // Connect to MongoDB
-const rawMongoUri = (MONGODB_URI || "").trim().replace(/^["']|["']$/g, '');
-
-if (rawMongoUri) {
-  if (!rawMongoUri.startsWith("mongodb://") && !rawMongoUri.startsWith("mongodb+srv://")) {
-    console.error(`❌ MongoDB Connection Error: Invalid connection string "${rawMongoUri}". URI must start with "mongodb://" or "mongodb+srv://".`);
-    console.warn("⚠️ Operating in memory fallback mode until MONGODB_URI is updated.");
-  } else {
-    console.log("⏳ Connecting to MongoDB Atlas...");
-    mongoose.connect(rawMongoUri)
-      .then(async () => {
-        isMongoConnected = true;
-        console.log("✅ MongoDB Connected");
-        await seedMongoDBData();
-      })
-      .catch((err) => {
-        isMongoConnected = false;
-        console.error("❌ MongoDB Connection Error:", err.message || err);
-        console.warn("⚠️ Operating in memory fallback mode until MongoDB is reconnected.");
-      });
-  }
+if (process.env.MONGODB_URI) {
+  console.log("⏳ Connecting to MongoDB Atlas...");
+  mongoose.connect(process.env.MONGODB_URI)
+    .then(async () => {
+      isMongoConnected = true;
+      console.log("✅ MongoDB Connected");
+      await seedMongoDBData();
+    })
+    .catch((err) => {
+      isMongoConnected = false;
+      console.error("❌ MongoDB Connection Error:", err.message || err);
+      console.warn("⚠️ Operating in memory fallback mode until MongoDB is reconnected.");
+    });
 } else {
   console.warn("⚠️ MONGODB_URI environment variable not provided. Operating in memory fallback mode.");
 }
