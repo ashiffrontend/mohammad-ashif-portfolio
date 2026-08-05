@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Control Center | Mohammad Ashif Portfolio</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <!-- Google Analytics 4 (GA4) Placeholder -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <!-- Microsoft Clarity Placeholder -->
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "XXXXXX");
+  </script>
+</head>
+<body class="admin-body">
+
+  <!-- Glassmorphism Login Overlay -->
+  <div class="admin-auth-overlay" id="admin-auth-overlay">
+    <div class="glass-card auth-card animate-slide-up" style="max-width: 440px; width: 90%; padding: 2.5rem 2rem;">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div class="profile-avatar-circle-sm" style="margin: 0 auto 1rem auto; width: 64px; height: 64px;">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="MA" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <div class="avatar-fallback" style="display: none; width: 100%; height: 100%; font-size: 1.5rem;">MA</div>
+        </div>
+        <h2 style="font-size: 1.5rem; font-weight: 700;">Admin Sign In</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">Manage Mohammad Ashif's Portfolio</p>
+      </div>
+
+      <form id="admin-login-form" style="display: flex; flex-direction: column; gap: 1.15rem;">
+        <div class="form-group">
+          <label style="font-size: 0.85rem; font-weight: 600;">Email Address</label>
+          <input type="email" id="admin-email-input" class="form-input" placeholder="admin@domain.com" required />
+        </div>
+
+        <div class="form-group">
+          <label style="font-size: 0.85rem; font-weight: 600;">Password</label>
+          <input type="password" id="admin-password-input" class="form-input" placeholder="••••••••••••" required />
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-secondary);">
+            <input type="checkbox" id="admin-remember-me" checked /> Remember Me
+          </label>
+          <a href="#" id="forgot-password-link" style="color: var(--primary-blue); font-weight: 500;">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-shine" style="padding: 0.85rem; margin-top: 0.5rem;">Sign In to Dashboard →</button>
+      </form>
+
+      <div style="margin-top: 1.5rem; text-align: center; font-size: 0.75rem; color: var(--text-muted);">
+        🔒 Secure Admin Authentication
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Topbar -->
+  <header class="admin-topbar">
+    <div class="admin-topbar-left">
+      <button class="btn-icon-sm" id="admin-sidebar-toggle" style="display: none;">☰</button>
+      <div class="admin-brand">
+        <div class="brand-logo-icon" style="width: 32px; height: 32px; font-size: 0.9rem;">MA</div>
+        <span>Control Center</span>
+        <span class="admin-badge-pill">Admin</span>
+      </div>
+    </div>
+
+    <div class="admin-topbar-right">
+      <a href="index.html" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.825rem;">🌐 View Live Portfolio</a>
+      <button class="theme-btn" aria-label="Toggle Theme">🌙</button>
+      <button class="btn btn-secondary" id="admin-logout-btn" style="padding: 0.4rem 0.85rem; font-size: 0.825rem;">🚪 Logout</button>
+    </div>
+  </header>
+
+  <!-- Admin Main Layout -->
+  <div class="admin-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-nav-group">
+        <span class="sidebar-label">Main Navigation</span>
+        <div class="sidebar-link active" data-target="view-dashboard">📊 Dashboard</div>
+        <div class="sidebar-link" data-target="view-projects">🚀 Projects</div>
+        <div class="sidebar-link" data-target="view-testimonials">⭐ Testimonials</div>
+        <div class="sidebar-link" data-target="view-blog">📝 Blog CMS</div>
+        <div class="sidebar-link" data-target="view-services">🛠️ Services</div>
+        <div class="sidebar-link" data-target="view-clients">💼 Clients & Invoices</div>
+        <div class="sidebar-link" data-target="view-messages">✉️ Enquiries Inbox <span class="sidebar-link-badge" id="unread-messages-badge" style="display: none;">0</span></div>
+        <div class="sidebar-link" data-target="view-analytics">📈 Project Analytics</div>
+        <div class="sidebar-link" data-target="view-visitors">👥 Real Visitor Analytics</div>
+        <div class="sidebar-link" data-target="view-notifications">🔔 Notifications</div>
+        <div class="sidebar-link" data-target="view-skills">⚡ Skills</div>
+        <div class="sidebar-link" data-target="view-certificates">📜 Certificates</div>
+        <div class="sidebar-link" data-target="view-achievements">🏆 Achievements</div>
+        <div class="sidebar-link" data-target="view-resume">📄 Resume Track</div>
+        <div class="sidebar-link" data-target="view-profile">👤 Profile</div>
+        <div class="sidebar-link" data-target="view-settings">⚙️ Settings & Users</div>
+        <div class="sidebar-link logout-link" id="sidebar-logout-btn" style="color: #ef4444;">🚪 Logout</div>
+      </div>
+    </aside>
+
+    <!-- Content Workspace Area -->
+    <main class="admin-content">
+
+      <!-- View 1: Dashboard Home -->
+      <section class="view-panel active" id="view-dashboard">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Welcome Back, Mohammad Ashif 👋</h1>
+            <p class="view-description">Overview of your portfolio metrics, content counters, and visitor activity.</p>
+          </div>
+          <button class="btn btn-primary" onclick="openProjectModal()">+ Add New Project</button>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-header"><span>Total Projects</span> <div class="kpi-icon">🚀</div></div>
+            <div class="kpi-value" id="kpi-total-projects">0</div>
+            <div class="kpi-trend up">↑ Portfolio Showcase</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header"><span>Certificates</span> <div class="kpi-icon">📜</div></div>
+            <div class="kpi-value" id="kpi-total-certs">0</div>
+            <div class="kpi-trend up">✓ Verified</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header"><span>Total Visitors</span> <div class="kpi-icon">👁</div></div>
+            <div class="kpi-value" id="kpi-total-visitors">0</div>
+            <div class="kpi-trend up">↑ Tracked Live</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header"><span>Messages Inbox</span> <div class="kpi-icon">✉️</div></div>
+            <div class="kpi-value" id="kpi-total-messages">0</div>
+            <div class="kpi-trend neutral">Client Inquiries</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header"><span>Active Skills</span> <div class="kpi-icon">⚡</div></div>
+            <div class="kpi-value" id="kpi-total-skills">15</div>
+            <div class="kpi-trend up">100% Precision</div>
+          </div>
+        </div>
+
+        <!-- Weekly Visitor Trend Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Visitor Growth & Engagement Chart</h3>
+            <span class="admin-badge-pill">Live Traffic</span>
+          </div>
+          <div class="chart-canvas-wrapper" id="visitor-trend-chart"></div>
+        </div>
+      </section>
+
+      <!-- View 2: Projects Manager -->
+      <section class="view-panel" id="view-projects">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Project Management</h1>
+            <p class="view-description">Add, edit, or delete projects with thumbnail, technology tags, and live links.</p>
+          </div>
+          <button class="btn btn-primary" onclick="openProjectModal()">+ Add New Project</button>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Thumbnail</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Tech Stack</th>
+                <th>Featured</th>
+                <th>Completion</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="projects-table-body">
+              <!-- Rendered via dashboard.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- View 3: Skills Manager -->
+      <section class="view-panel" id="view-skills">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Skills & Progress Bars</h1>
+            <p class="view-description">Manage icons, percentages, categories, and progress bars.</p>
+          </div>
+          <button class="btn btn-primary" onclick="addSkillModal()">+ Add New Skill</button>
+        </div>
+        <div id="skills-admin-list"></div>
+      </section>
+
+      <!-- View 4: Certificates Manager -->
+      <section class="view-panel" id="view-certificates">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Certificates</h1>
+            <p class="view-description">Upload, preview, download, or delete verified credentials.</p>
+          </div>
+          <button class="btn btn-primary" onclick="addCertificateModal()">+ Upload Certificate</button>
+        </div>
+        <div id="certs-admin-list"></div>
+      </section>
+
+      <!-- View 5: Achievements Manager -->
+      <section class="view-panel" id="view-achievements">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Achievements & Awards</h1>
+            <p class="view-description">Record hackathon victories, honors, and milestones by year.</p>
+          </div>
+          <button class="btn btn-primary" onclick="addAchievementModal()">+ Add Achievement</button>
+        </div>
+        <div id="achievements-admin-list"></div>
+      </section>
+
+      <!-- View: Testimonials Manager -->
+      <section class="view-panel" id="view-testimonials">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Testimonials & Reviews</h1>
+            <p class="view-description">Database-driven testimonials. Approve, reject, feature, or star-rate client reviews.</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddTestimonialModal()">+ Add Testimonial</button>
+        </div>
+        <div id="testimonials-admin-list"></div>
+      </section>
+
+      <!-- View: Blog CMS -->
+      <section class="view-panel" id="view-blog">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Blog & Content Management System</h1>
+            <p class="view-description">Publish tech articles, SEO posts, tutorials, and development logs.</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddBlogPostModal()">+ Write Blog Post</button>
+        </div>
+        <div id="blog-admin-list"></div>
+      </section>
+
+      <!-- View: Clients & Invoices -->
+      <section class="view-panel" id="view-clients">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Clients & Invoices Manager</h1>
+            <p class="view-description">Track client project details, invoice payment statuses, and revenue milestones.</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddInvoiceModal()">+ Create Invoice</button>
+        </div>
+        <div id="clients-invoices-admin-list"></div>
+      </section>
+
+      <!-- View: Notifications -->
+      <section class="view-panel" id="view-notifications">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Admin System Notifications</h1>
+            <p class="view-description">Real-time alerts for new visitors, enquiries, resume downloads, and project clicks.</p>
+          </div>
+          <button class="btn btn-secondary" onclick="markAllNotificationsRead()">Mark All as Read</button>
+        </div>
+        <div id="notifications-admin-list"></div>
+      </section>
+
+      <!-- View 6: Services -->
+      <section class="view-panel" id="view-services">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Services & Offerings</h1>
+            <p class="view-description">Manage services, pricing tiers, and descriptions for freelance clients.</p>
+          </div>
+        </div>
+        <div id="services-admin-list"></div>
+      </section>
+
+      <!-- View 7: Messages Inbox -->
+      <section class="view-panel" id="view-messages">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Contact Messages Inbox</h1>
+            <p class="view-description">Form submissions received from portfolio visitors stored in Local Storage.</p>
+          </div>
+        </div>
+        <div id="messages-admin-list"></div>
+      </section>
+
+      <!-- View 8: Analytics -->
+      <section class="view-panel" id="view-analytics">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Interaction & Conversion Analytics</h1>
+            <p class="view-description">Real-time button click tracking across portfolio links.</p>
+          </div>
+        </div>
+        <div id="click-analytics-panel"></div>
+      </section>
+
+      <!-- View 9: Visitors -->
+      <section class="view-panel" id="view-visitors">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Visitor Traffic & Demographic Analytics</h1>
+            <p class="view-description">Detailed breakdown of traffic metrics, devices, browsers, and top pages.</p>
+          </div>
+        </div>
+        <div id="visitor-analytics-panel"></div>
+      </section>
+
+      <!-- View 10: Resume -->
+      <section class="view-panel" id="view-resume">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Resume Configuration</h1>
+            <p class="view-description">Manage resume download URL and click counters.</p>
+          </div>
+        </div>
+        <div id="resume-admin-panel"></div>
+      </section>
+
+      <!-- View 11: Profile -->
+      <section class="view-panel" id="view-profile">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Profile Management</h1>
+            <p class="view-description">Update developer avatar photo, title, bio, and social media handles.</p>
+          </div>
+        </div>
+        <div id="profile-admin-panel"></div>
+      </section>
+
+      <!-- View 12: Settings -->
+      <section class="view-panel" id="view-settings">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Portfolio Settings & Data Backup</h1>
+            <p class="view-description">Configure logo, GA4 / Clarity IDs, change PIN, and export/import JSON backups.</p>
+          </div>
+        </div>
+        <div id="settings-admin-panel"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Universal CRUD Modal Overlay for Admin -->
+  <div class="modal-overlay" id="admin-modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="document.getElementById('admin-modal-overlay').classList.remove('show')">✕</button>
+      <div id="admin-modal-body"></div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/dashboard.js"></script>
+
+</body>
+</html>

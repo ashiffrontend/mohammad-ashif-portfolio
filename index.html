@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mohammad Ashif | Senior Frontend Developer & UI/UX Specialist</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Personal Portfolio of Mohammad Ashif, a Senior Frontend Developer and UI/UX Designer specializing in HTML5, CSS3, Vanilla JavaScript, and Vercel/Apple inspired designs." />
+  <meta name="keywords" content="Mohammad Ashif, Frontend Developer, UI UX Designer, Web Developer Portfolio, JavaScript, CSS3, HTML5, Vercel UI" />
+  <meta name="author" content="Mohammad Ashif" />
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="Mohammad Ashif | Senior Frontend Developer" />
+  <meta property="og:description" content="Explore projects, skills, achievements, and services by Mohammad Ashif." />
+  <meta property="og:type" content="website" />
+
+  <!-- Google Analytics 4 (GA4) Placeholder -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <!-- Microsoft Clarity Placeholder -->
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "XXXXXX");
+  </script>
+
+  <!-- Google Fonts: Poppins & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+  <!-- Particle Background Canvas -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Scroll Progress Bar -->
+  <div class="scroll-progress-container">
+    <div class="scroll-progress-bar" id="scroll-progress-bar"></div>
+  </div>
+
+  <!-- Sticky Navbar -->
+  <nav class="navbar" id="navbar">
+    <a href="#hero" class="nav-brand">
+      <div class="brand-logo-icon">MA</div>
+      <span>Mohammad Ashif</span>
+    </a>
+
+    <ul class="nav-menu">
+      <li><a href="#hero" class="nav-link active">Home</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#skills" class="nav-link">Skills</a></li>
+      <li><a href="#projects" class="nav-link">Projects</a></li>
+      <li><a href="#achievements" class="nav-link">Achievements</a></li>
+      <li><a href="#services" class="nav-link">Services</a></li>
+      <li><a href="#testimonials" class="nav-link">Reviews</a></li>
+      <li><a href="#blog" class="nav-link">Blog</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <!-- Highlighted Hire Me Button -->
+      <a href="https://ashif-freelance-platform.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn-primary nav-hire-btn">
+        <i class="fa-solid fa-rocket"></i>
+        <span>Hire Me</span>
+      </a>
+
+      <!-- Theme Switcher -->
+      <button class="theme-btn" id="theme-btn" aria-label="Toggle Theme">🌙</button>
+
+      <!-- Mobile Hamburger -->
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer">
+    <a href="#hero" class="mobile-nav-link">Home</a>
+    <a href="#about" class="mobile-nav-link">About</a>
+    <a href="#skills" class="mobile-nav-link">Skills</a>
+    <a href="#projects" class="mobile-nav-link">Projects</a>
+    <a href="#achievements" class="mobile-nav-link">Achievements</a>
+    <a href="#services" class="mobile-nav-link">Services</a>
+    <a href="#blog" class="mobile-nav-link">Blog</a>
+    <a href="https://ashif-freelance-platform.vercel.app/" target="_blank" rel="noopener noreferrer" class="mobile-nav-link" style="color: var(--primary-blue); font-weight: 700;">Client Portal / Contact ↗</a>
+    <a href="https://ashif-freelance-platform.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: 1rem;">
+      🚀 Hire Me Now
+    </a>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-badge animate-fade-in">
+          <span class="status-dot"></span>
+          <span>Available for Freelance & Full-time Roles</span>
+        </div>
+
+        <h1 class="hero-title animate-slide-up">
+          Hi, I'm <br />
+          <span class="gradient-text">Mohammad Ashif</span>
+        </h1>
+
+        <div class="typing-container animate-fade-in">
+          <span>Creative </span>
+          <span id="typing-text">Frontend Developer</span>
+          <span class="typing-cursor"></span>
+        </div>
+
+        <p class="hero-description animate-fade-in">
+          BCA Student at Aliah University (Graduating 2027) • Frontend Web Developer • 6 Months Internship Experience • 1 Year Web Development Experience • Built 10+ Real-World Projects • Available for Freelance & Remote Work
+        </p>
+
+        <div class="hero-buttons animate-fade-in">
+          <a href="https://ashif-freelance-platform.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-shine">🚀 Hire Me Now</a>
+          <a href="#projects" class="btn btn-secondary">View Work</a>
+          <button class="btn btn-sky" id="resume-download-btn">📥 Download Resume</button>
+        </div>
+
+        <div class="social-links animate-fade-in" id="hero-social-links">
+          <a href="https://github.com/ashiffrontend" target="_blank" rel="noopener noreferrer" class="social-icon social-github track-click" data-event="githubClicks" aria-label="GitHub Profile - Mohammad Ashif" title="GitHub Profile">
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/mohd-ashif-095963425/" target="_blank" rel="noopener noreferrer" class="social-icon social-linkedin track-click" data-event="linkedinClicks" aria-label="LinkedIn Profile - Mohammad Ashif" title="LinkedIn Profile">
+            <i class="fa-brands fa-linkedin-in"></i>
+          </a>
+          <a href="mailto:mohdashif.dev@gmail.com" class="social-icon social-email track-click" data-event="emailClicks" aria-label="Send Email to Mohammad Ashif" title="Email Me">
+            <i class="fa-solid fa-envelope"></i>
+          </a>
+          <a href="https://whatsapp.com/channel/0029Va9sC8s42Dcc1aO9S33a" target="_blank" rel="noopener noreferrer" class="social-icon social-whatsapp track-click" data-event="contactClicks" aria-label="WhatsApp Channel - Mohammad Ashif" title="WhatsApp Channel">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero Image Avatar -->
+      <div class="hero-image-wrapper animate-float">
+        <div class="profile-avatar-card glass-card" id="hero-profile-avatar-card">
+          <img id="hero-profile-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80" alt="Mohammad Ashif" />
+          <div id="hero-profile-fallback" class="avatar-fallback-hero" style="display: none;">MA</div>
+          
+          <div class="float-badge badge-top-left">
+            <div class="badge-icon">⚡</div>
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Lighthouse Score</div>
+              <div style="font-weight: 800; color: #10b981;">99/100</div>
+            </div>
+          </div>
+
+          <div class="float-badge badge-bottom-right">
+            <div class="badge-icon">🚀</div>
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Completed Projects</div>
+              <div style="font-weight: 800; color: var(--primary-blue);">10+ Projects</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Me Section -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">About Me</span>
+        <h2 class="section-title">Crafting Modern Digital Experiences</h2>
+        <p class="section-subtitle">Dedicated to clean architecture, fast load times, and intuitive visual ergonomics.</p>
+      </div>
+
+      <div class="about-grid reveal">
+        <div class="glass-card about-summary-box">
+          <h3>Professional Summary</h3>
+          <p>
+            I am Mohammad Ashif, a BCA Student at Aliah University (Graduating 2027) and Frontend Web Developer with 6 months of internship experience and 1 year of web development experience. I have built 10+ real-world projects and am available for freelance & remote work.
+          </p>
+          <div class="about-stats-grid">
+            <div class="stat-card">
+              <span class="stat-number">1 Year</span>
+              <span class="stat-label">Web Dev Experience</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">6 Mos</span>
+              <span class="stat-label">Internship Experience</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">10+</span>
+              <span class="stat-label">Real-World Projects</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">100%</span>
+              <span class="stat-label">Freelance & Remote</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-details-list">
+          <div class="glass-card about-item-card">
+            <div class="item-icon"><i class="fa-solid fa-graduation-cap" style="color: var(--primary-blue);"></i></div>
+            <div class="item-content">
+              <h4>Bachelor of Computer Applications (BCA)</h4>
+              <div class="item-meta">Aliah University (2024 - 2027)</div>
+              <p class="item-desc">Focused on Web Engineering, Modern Frontend Technologies, Data Structures, and Software Development.</p>
+            </div>
+          </div>
+
+          <div class="glass-card about-item-card">
+            <div class="item-icon"><i class="fa-solid fa-briefcase" style="color: var(--primary-blue);"></i></div>
+            <div class="item-content">
+              <h4>Frontend Web Developer Intern</h4>
+              <div class="item-meta">6 Months Internship • 1 Year Web Development Experience</div>
+              <p class="item-desc">Crafted responsive web interfaces, built 10+ real-world projects, and optimized frontend performance.</p>
+            </div>
+          </div>
+
+          <div class="glass-card about-item-card">
+            <div class="item-icon">🌐</div>
+            <div class="item-content">
+              <h4>Languages Spoken</h4>
+              <div class="item-meta">English (Fluent) • Hindi (Native) • Urdu</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section class="section" id="skills">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Tech Stack</span>
+        <h2 class="section-title">Core Skills & Proficiency</h2>
+        <p class="section-subtitle">Proficient across modern web standards, performance profiling, and design workflows.</p>
+      </div>
+
+      <div class="skills-container reveal" id="skills-grid">
+        <!-- Rendered via script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section class="section" id="projects">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Portfolio Showcase</span>
+        <h2 class="section-title">Featured Projects</h2>
+        <p class="section-subtitle">Explore selected applications, dashboards, and design systems.</p>
+      </div>
+
+      <div class="project-controls reveal">
+        <div class="project-filters">
+          <button class="filter-btn active" data-filter="All">All Projects (10)</button>
+          <button class="filter-btn" data-filter="Landing Page">Landing Pages</button>
+          <button class="filter-btn" data-filter="Education Website">Education</button>
+          <button class="filter-btn" data-filter="Healthcare Website">Healthcare</button>
+          <button class="filter-btn" data-filter="Business Website">Business</button>
+          <button class="filter-btn" data-filter="E-Commerce">E-Commerce</button>
+          <button class="filter-btn" data-filter="Agriculture & Business">Agriculture</button>
+          <button class="filter-btn" data-filter="Tourism & Travel">Travel</button>
+          <button class="filter-btn" data-filter="Real Estate">Real Estate</button>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; width: 100%; max-width: 500px;">
+          <div class="project-search-box" style="flex: 1; min-width: 200px;">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="project-search-input" placeholder="Search by name, tech or feature..." />
+          </div>
+
+          <select id="project-sort-select" class="form-select project-sort-select" style="padding: 0.65rem 1rem; border-radius: var(--radius-full); font-size: 0.85rem; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); cursor: pointer;">
+            <option value="featured">★ Featured First</option>
+            <option value="popular">🔥 Most Liked</option>
+            <option value="views">👁 Most Viewed</option>
+            <option value="newest">📅 Newest Date</option>
+            <option value="title">🔤 Title A-Z</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="projects-grid reveal" id="projects-grid">
+        <!-- Rendered via script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Achievements Section -->
+  <section class="section" id="achievements">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Milestones</span>
+        <h2 class="section-title">Achievements & Certifications</h2>
+        <p class="section-subtitle">Verified certificates, competitive awards, and hackathon victories.</p>
+      </div>
+
+      <div class="achievements-grid reveal" id="achievements-grid" style="margin-bottom: 2.5rem;">
+        <!-- Rendered via script.js -->
+      </div>
+
+      <h3 class="reveal" style="text-align: center; margin-bottom: 1.5rem;">Verified Certificates</h3>
+      <div class="achievements-grid reveal" id="certificates-grid">
+        <!-- Rendered via script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Services & Pricing Section -->
+  <section class="section" id="services">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag"><i class="fa-solid fa-tags"></i> Affordable Packages</span>
+        <h2 class="section-title">Affordable Website Development Packages</h2>
+        <p class="section-subtitle">Professional websites at budget-friendly prices for startups, local businesses and organizations.</p>
+
+        <!-- Dynamic Location Pricing Banner -->
+        <div class="location-pricing-banner" id="location-pricing-banner">
+          <div class="location-badge">
+            <span class="location-pulse-dot"></span>
+            <i class="fa-solid fa-location-dot" style="color: var(--primary-blue); font-size: 0.9rem;"></i>
+            <span id="location-label-text">Pricing shown according to your location</span>
+          </div>
+
+          <div class="currency-switch-toggle">
+            <button type="button" class="currency-btn active" id="btn-curr-auto" onclick="setCurrencyPreference('auto')" title="Auto detect location">
+              <i class="fa-solid fa-compass" style="font-size: 0.8rem;"></i> Auto Detect
+            </button>
+            <button type="button" class="currency-btn" id="btn-curr-inr" onclick="setCurrencyPreference('INR')" title="Display in Indian Rupees">
+              🇮🇳 ₹ INR
+            </button>
+            <button type="button" class="currency-btn" id="btn-curr-usd" onclick="setCurrencyPreference('USD')" title="Display in US Dollars">
+              🌐 $ USD
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Packages Grid -->
+      <div class="services-grid reveal" id="services-grid">
+        <!-- Rendered via script.js -->
+      </div>
+
+      <!-- Simple Payment Process (Timeline) -->
+      <div class="payment-process-wrapper reveal" style="margin-top: 4rem;">
+        <div class="section-header text-center" style="margin-bottom: 2.25rem;">
+          <span class="section-tag"><i class="fa-solid fa-route"></i> Timeline</span>
+          <h3 class="section-title" style="font-size: 1.85rem;">Simple Payment Process</h3>
+          <p class="section-subtitle">Transparent 6-step workflow from initial booking to final website delivery.</p>
+        </div>
+
+        <div class="payment-timeline">
+          <div class="timeline-step-card glass-card hover-lift">
+            <div class="step-number">1</div>
+            <div class="step-icon"><i class="fa-solid fa-box-open"></i></div>
+            <h4>1️⃣ Select a Package</h4>
+            <p>Choose the website package that fits your business needs.</p>
+          </div>
+          <div class="timeline-step-card glass-card hover-lift">
+            <div class="step-number">2</div>
+            <div class="step-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+            <h4>2️⃣ Pay Booking Amount</h4>
+            <p>Pay small booking advance to lock in your project slot.</p>
+          </div>
+          <div class="timeline-step-card glass-card hover-lift">
+            <div class="step-number">3</div>
+            <div class="step-icon"><i class="fa-solid fa-comments"></i></div>
+            <h4>3️⃣ Discuss Requirements</h4>
+            <p>Share your text, logo, photos, or references on WhatsApp.</p>
+          </div>
+          <div class="timeline-step-card glass-card hover-lift">
+            <div class="step-number">4</div>
+            <div class="step-icon"><i class="fa-solid fa-laptop-code"></i></div>
+            <h4>4️⃣ Development Starts</h4>
+            <p>Fast, professional website building begins right away.</p>
+          </div>
+          <div class="timeline-step-card glass-card hover-lift">
+            <div class="step-number">5</div>
+            <div class="step-icon"><i class="fa-solid fa-eye"></i></div>
+            <h4>5️⃣ Review Your Website</h4>
+            <p>Inspect your live preview website on mobile & desktop.</p>
+          </div>
+          <div class="timeline-step-card glass-card hover-lift">
+            <div class="step-number">6</div>
+            <div class="step-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <h4>6️⃣ Final Pay & Source Code</h4>
+            <p>Pay remaining balance upon approval & get full source code.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Note Guarantee Card -->
+      <div class="payment-guarantee-card glass-card reveal" style="margin-top: 3rem; padding: 2rem; border-left: 4px solid #10b981; position: relative; overflow: hidden;">
+        <div class="guarantee-header" style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.25rem;">
+          <div class="guarantee-icon" style="width: 44px; height: 44px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div>
+            <h4 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0;">Payment Policy & Guarantee</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Straightforward, client-first policy with full peace of mind.</p>
+          </div>
+        </div>
+        <div class="guarantee-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem;">
+          <div class="guarantee-item" style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">
+            <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 1.15rem; margin-top: 0.05rem;"></i>
+            <span>Small advance confirms your project booking.</span>
+          </div>
+          <div class="guarantee-item" style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">
+            <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 1.15rem; margin-top: 0.05rem;"></i>
+            <span>Remaining payment after website completion and approval.</span>
+          </div>
+          <div class="guarantee-item" style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">
+            <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 1.15rem; margin-top: 0.05rem;"></i>
+            <span>No hidden charges.</span>
+          </div>
+          <div class="guarantee-item" style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">
+            <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 1.15rem; margin-top: 0.05rem;"></i>
+            <span>Free support after delivery.</span>
+          </div>
+          <div class="guarantee-item" style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">
+            <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 1.15rem; margin-top: 0.05rem;"></i>
+            <span>Mobile-friendly responsive website included.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Methods Badges -->
+      <div class="payment-methods-box reveal" style="margin-top: 2.5rem; text-align: center;">
+        <div style="font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 1rem;">
+          Accepted Payment Methods
+        </div>
+        <div class="payment-badges-flex" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.85rem;">
+          <div class="pay-method-badge"><i class="fa-solid fa-qrcode" style="color: #10b981; font-size: 1.1rem;"></i> UPI</div>
+          <div class="pay-method-badge"><i class="fa-brands fa-google-pay" style="color: #4285F4; font-size: 1.3rem;"></i> Google Pay</div>
+          <div class="pay-method-badge"><i class="fa-solid fa-mobile-screen-button" style="color: #5f259f; font-size: 1.1rem;"></i> PhonePe</div>
+          <div class="pay-method-badge"><i class="fa-solid fa-wallet" style="color: #00baf2; font-size: 1.1rem;"></i> Paytm</div>
+          <div class="pay-method-badge"><i class="fa-solid fa-building-columns" style="color: var(--primary-blue); font-size: 1.1rem;"></i> Bank Transfer</div>
+          <div class="pay-method-badge"><i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 1.2rem;"></i> WhatsApp Pay</div>
+        </div>
+      </div>
+
+      <!-- Extra Services Table -->
+      <div class="extra-services-wrapper reveal" style="margin-top: 4rem;">
+        <div class="section-header text-center" style="margin-bottom: 2.25rem;">
+          <span class="section-tag"><i class="fa-solid fa-sliders"></i> Add-ons</span>
+          <h3 class="section-title" style="font-size: 1.85rem;">Extra Services & Pricing</h3>
+          <p class="section-subtitle">Optional add-on services to enhance your website, hosting, and online reach.</p>
+        </div>
+
+        <div class="extra-services-grid">
+          <div class="extra-service-card glass-card hover-lift">
+            <div class="extra-icon"><i class="fa-solid fa-globe"></i></div>
+            <div class="extra-info">
+              <h4>Domain Setup</h4>
+              <p>Custom domain configuration & SSL</p>
+            </div>
+            <div class="extra-price">₹299</div>
+          </div>
+
+          <div class="extra-service-card glass-card hover-lift">
+            <div class="extra-icon"><i class="fa-solid fa-server"></i></div>
+            <div class="extra-info">
+              <h4>Hosting Assistance</h4>
+              <p>Cloud deployment & server setup</p>
+            </div>
+            <div class="extra-price">₹499</div>
+          </div>
+
+          <div class="extra-service-card glass-card hover-lift">
+            <div class="extra-icon"><i class="fa-brands fa-whatsapp"></i></div>
+            <div class="extra-info">
+              <h4>WhatsApp Integration</h4>
+              <p>Instant WhatsApp chat & order button</p>
+            </div>
+            <div class="extra-price">₹299</div>
+          </div>
+
+          <div class="extra-service-card glass-card hover-lift">
+            <div class="extra-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+            <div class="extra-info">
+              <h4>Google Maps</h4>
+              <p>Business location & directions embedding</p>
+            </div>
+            <div class="extra-price">₹199</div>
+          </div>
+
+          <div class="extra-service-card glass-card hover-lift">
+            <div class="extra-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+            <div class="extra-info">
+              <h4>Professional Email Setup</h4>
+              <p>Custom email box (e.g., info@yourbrand.com)</p>
+            </div>
+            <div class="extra-price">₹499</div>
+          </div>
+
+          <div class="extra-service-card glass-card hover-lift">
+            <div class="extra-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+            <div class="extra-info">
+              <h4>SEO Optimization</h4>
+              <p>On-page meta tags & Google indexing</p>
+            </div>
+            <div class="extra-price">₹799</div>
+          </div>
+
+          <div class="extra-service-card glass-card hover-lift">
+            <div class="extra-icon"><i class="fa-solid fa-mobile-retro"></i></div>
+            <div class="extra-info">
+              <h4>PWA Installation</h4>
+              <p>Installable app-like mobile experience</p>
+            </div>
+            <div class="extra-price">₹999</div>
+          </div>
+
+          <div class="extra-service-card glass-card hover-lift">
+            <div class="extra-icon"><i class="fa-solid fa-gauge-high"></i></div>
+            <div class="extra-info">
+              <h4>Admin Dashboard</h4>
+              <p>Manage content, products & inquiries</p>
+            </div>
+            <div class="extra-price">Starting ₹1,999</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="section" id="testimonials">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Reviews</span>
+        <h2 class="section-title">Client Testimonials</h2>
+        <p class="section-subtitle">Feedback from project stakeholders and business leaders.</p>
+      </div>
+
+      <div class="testimonials-grid reveal" id="testimonials-grid">
+        <!-- Rendered via script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Section -->
+  <section class="section" id="blog">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Articles</span>
+        <h2 class="section-title">Latest Articles & Insights</h2>
+        <p class="section-subtitle">Thoughts on JavaScript performance, CSS architecture, and web design.</p>
+      </div>
+
+      <div class="blogs-grid reveal" id="blogs-grid">
+        <!-- Rendered via script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Get In Touch</span>
+        <h2 class="section-title">Let's Work Together</h2>
+        <p class="section-subtitle">Have a project in mind or want to hire me? Drop me a message below!</p>
+      </div>
+
+      <div class="contact-grid reveal">
+        <div class="contact-info-list">
+          <div class="glass-card contact-item">
+            <div class="item-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Email Address</div>
+              <strong style="font-size: 1.05rem;">mohdashif.dev@gmail.com</strong>
+            </div>
+          </div>
+
+          <div class="glass-card contact-item hover-lift">
+            <div class="item-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;"><i class="fa-brands fa-whatsapp" style="font-size: 1.35rem;"></i></div>
+            <div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.15rem;">WhatsApp Number</div>
+              <div id="contact-phone-val">
+                <a href="https://wa.me/916202782715?text=Hi%20Mohammad%20Ashif,%20I%20would%20like%20to%20discuss%20a%20project!" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; font-weight: 800; font-size: 1.05rem;">+91 6202782715</a>
+                <span style="font-size: 0.72rem; font-weight: 700; color: #10b981; background: rgba(16, 185, 129, 0.12); padding: 0.15rem 0.5rem; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.25); margin-left: 0.35rem;">WhatsApp Msg Only</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card contact-item">
+            <div class="item-icon"><i class="fa-solid fa-location-dot"></i></div>
+            <div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Location</div>
+              <strong style="font-size: 1.05rem;">New Delhi, India (Available Worldwide)</strong>
+            </div>
+          </div>
+
+          <!-- Google Maps Embed -->
+          <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d224345.8392319277!2d77.0688975472578!3d28.52728034389636!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x52c2b7494e204dce!2sNew%20Delhi%2C%20Delhi!5e0!3m2!1sen!2sin!4v1680000000000!5m2!1sen!2sin" loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <!-- Freelance Client Portal Card (Replacing Form as per user request) -->
+        <div class="glass-card contact-portal-card hover-lift" style="padding: 2.5rem; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 1.5rem; border-left: 5px solid var(--primary-blue);">
+          <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(37, 99, 235, 0.1); color: var(--primary-blue); border: 1px solid rgba(37, 99, 235, 0.25); padding: 0.4rem 0.85rem; border-radius: 9999px; font-size: 0.82rem; font-weight: 700;">
+            <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Official Freelance Client Portal
+          </div>
+          
+          <h3 style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary); margin: 0;">Ready to start your project?</h3>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.6; margin: 0;">
+            Click below to open my Freelance Client Portal for Hire Me, Client Enquiry, Service Requests, Quote Requests, and Project Bookings.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 0.85rem; width: 100%; margin: 0.5rem 0;">
+            <div style="display: flex; align-items: center; gap: 0.65rem; font-size: 0.95rem; font-weight: 600; color: var(--text-primary);">
+              <i class="fa-solid fa-bolt" style="color: #38bdf8; font-size: 1.1rem;"></i> Instant Project Booking & Slot Reservation
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.65rem; font-size: 0.95rem; font-weight: 600; color: var(--text-primary);">
+              <i class="fa-solid fa-file-invoice-dollar" style="color: #10b981; font-size: 1.1rem;"></i> Custom Quote Request & Service Pricing
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.65rem; font-size: 0.95rem; font-weight: 600; color: var(--text-primary);">
+              <i class="fa-solid fa-comments" style="color: var(--primary-blue); font-size: 1.1rem;"></i> Direct Client Requirement Submission
+            </div>
+          </div>
+
+          <a href="https://ashif-freelance-platform.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-shine btn-portal-large" style="width: 100%; padding: 1.1rem 2rem; font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+            <span>🚀 Hire Me</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.95rem;"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <!-- Footer Callout: Need a Website? Let's Build Your Dream Website -->
+      <div class="footer-cta-card glass-card reveal" style="margin-bottom: 3.5rem; padding: 2.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(56, 189, 248, 0.08)); border: 1px solid rgba(37, 99, 235, 0.25);">
+        <div>
+          <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary-blue);">Need a Website?</span>
+          <h3 style="font-size: 1.65rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0 0.35rem 0;">Let's Build Your Dream Website</h3>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0;">Professional, high-converting websites designed & developed for your brand.</p>
+        </div>
+        <a href="https://ashif-freelance-platform.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-shine" style="padding: 0.9rem 1.8rem; font-weight: 800; font-size: 1rem;">
+          <span>🚀 Hire Me</span>
+          <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85rem;"></i>
+        </a>
+      </div>
+
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-brand">
+            <div class="brand-logo-icon">MA</div>
+            <span>Mohammad Ashif</span>
+          </div>
+          <p>
+            Building high performance web applications with Apple and Vercel inspired aesthetic precision.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-title">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="https://ashif-freelance-platform.vercel.app/" target="_blank" rel="noopener noreferrer" style="color: var(--primary-blue); font-weight: 700;">Hire Me / Contact ↗</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-title">Connect</h4>
+          <ul class="footer-links" id="footer-connect-links">
+            <li><a href="https://github.com/ashiffrontend" target="_blank" rel="noopener noreferrer" class="track-click" data-event="githubClicks">GitHub</a></li>
+            <li><a href="https://www.linkedin.com/in/mohd-ashif-095963425/" target="_blank" rel="noopener noreferrer" class="track-click" data-event="linkedinClicks">LinkedIn</a></li>
+            <li><a href="mailto:mohdashif.dev@gmail.com" class="track-click" data-event="emailClicks">Email Me</a></li>
+            <li><a href="https://whatsapp.com/channel/0029Va9sC8s42Dcc1aO9S33a" target="_blank" rel="noopener noreferrer" class="track-click" data-event="contactClicks">WhatsApp Channel</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-title">Newsletter</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Subscribe to get my latest articles & design code snippets.</p>
+          <div class="newsletter-box">
+            <input type="email" placeholder="Enter your email" />
+            <button class="btn btn-primary" onclick="window.showToast('Subscribed to newsletter!', 'success')">Join</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; <span id="current-year">2026</span> Mohammad Ashif. All rights reserved.</div>
+        <div class="footer-credit-text">
+          Designed & Developed with <span class="animate-heart-pulse">💙</span> by <span class="gradient-text">Mohammad Ashif</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top button -->
+  <button class="back-to-top" id="back-to-top" aria-label="Back to Top">↑</button>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Universal Lightbox Overlay -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="modal-close-btn">✕</button>
+      <div id="modal-content-body"></div>
+    </div>
+  </div>
+
+  <!-- Premium Hire Me Modal -->
+  <div class="modal-overlay" id="hire-modal-overlay">
+    <div class="modal-content glass-card" style="max-width: 680px; width: 92%; padding: 2rem; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close-btn" onclick="closeHireModal()">✕</button>
+      
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <span class="section-tag" style="margin-bottom: 0.5rem; display: inline-block;">🚀 Start Your Project</span>
+        <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.35rem;">Hire Mohammad Ashif</h2>
+        <p style="font-size: 0.875rem; color: var(--text-muted);">Fill out your project details for an immediate quote & timeline estimate.</p>
+      </div>
+
+      <!-- Quick Platform Link Banner -->
+      <a href="https://ashif-freelance-platform.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary w-full track-click" data-event="hireMeClicks" style="display: flex; align-items: center; justify-content: center; gap: 0.6rem; margin-bottom: 1.5rem; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.25); color: var(--primary-blue); font-weight: 700; padding: 0.75rem 1rem; border-radius: var(--radius-md);">
+        <span>⚡ Prefer to use the Freelance Platform Client Portal?</span>
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      </a>
+
+      <form id="hire-project-form" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Your Name *</label>
+            <input type="text" id="hire-name" class="form-input" placeholder="e.g. Rahul Sharma" required />
+          </div>
+
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Your Email *</label>
+            <input type="email" id="hire-email" class="form-input" placeholder="e.g. rahul@company.com" required />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Phone / WhatsApp *</label>
+            <input type="tel" id="hire-phone" class="form-input" placeholder="+91 9876543210" required />
+          </div>
+
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Company / Brand Name</label>
+            <input type="text" id="hire-company" class="form-input" placeholder="e.g. Nexus Tech Studio" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Country *</label>
+            <input type="text" id="hire-country" class="form-input" placeholder="India / USA / UAE..." required />
+          </div>
+
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Project Budget *</label>
+            <select id="hire-budget" class="form-select" required>
+              <option value="Starter (₹999 / $20)">Starter Package (₹999 / $20)</option>
+              <option value="Business (₹1,499 / $30)">Business Package (₹1,499 / $30)</option>
+              <option value="School / Hospital (₹1,999 / $40)">School / Hospital Portal (₹1,999 / $40)</option>
+              <option value="E-Commerce / Enterprise (₹2,999+ / $50+)">E-Commerce & Custom App (₹2,999+ / $50+)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Target Timeline</label>
+            <select id="hire-timeline" class="form-select">
+              <option value="Urgent (24-48 Hours)">⚡ Urgent (24-48 Hours)</option>
+              <option value="Standard (2-3 Days)" selected>⏱️ Standard (2-3 Days)</option>
+              <option value="1 Week">📅 1 Week</option>
+              <option value="Flexible">☕ Flexible</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Project Type *</label>
+            <select id="hire-type" class="form-select" required>
+              <option value="Landing Page">Landing Page</option>
+              <option value="Business Website">Business Website</option>
+              <option value="School Website">School / Education Portal</option>
+              <option value="Hospital Website">Hospital / Clinic Website</option>
+              <option value="E-Commerce Store">E-Commerce Store</option>
+              <option value="Custom Web App">Custom Web Application</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label style="font-size: 0.85rem; font-weight: 600;">Project Requirements & Scope *</label>
+          <textarea id="hire-details" class="form-textarea" rows="3" placeholder="Describe your website goals, design preferences, or features needed..." required></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Attachment Upload (Optional)</label>
+            <input type="file" id="hire-attachment" class="form-input" accept=".pdf,.doc,.docx,.png,.jpg,.zip" style="padding: 0.4rem;" />
+          </div>
+
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Preferred Contact Method</label>
+            <select id="hire-contact-method" class="form-select">
+              <option value="WhatsApp">💬 WhatsApp Message</option>
+              <option value="Email">📧 Email Response</option>
+              <option value="Phone Call">📞 Phone Call</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-shine" style="padding: 0.85rem; font-weight: 700; font-size: 1rem; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+          <span>🚀 Submit Enquiry & Generate Ticket</span>
+        </button>
+      </form>
+
+      <!-- Success Result Box (hidden initially) -->
+      <div id="hire-success-box" style="display: none; text-align: center; padding: 2rem 1rem;">
+        <div style="width: 70px; height: 70px; background: rgba(34, 197, 94, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem auto; font-size: 2rem; color: #22c55e;">
+          ✓
+        </div>
+        <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">Enquiry Submitted Successfully!</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+          Thank you! Your project request has been logged and sent to <strong>mohdashif.dev@gmail.com</strong>.
+        </p>
+        <div style="background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-md); border: 1px dashed var(--primary-blue); display: inline-block; margin-bottom: 1.5rem;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">YOUR ENQUIRY ID</span>
+          <strong id="enquiry-id-display" style="font-size: 1.25rem; letter-spacing: 1px; color: var(--primary-blue);">#ENQ-89421</strong>
+        </div>
+        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+          <a id="whatsapp-direct-link" href="https://wa.me/916202782715" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="background: #25D366; border-color: #25D366;">
+            <i class="fa-brands fa-whatsapp"></i> Chat Direct on WhatsApp
+          </a>
+          <button class="btn btn-secondary" onclick="closeHireModal()">Close Window</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/storage.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/visitor.js"></script>
+  <script src="js/counter.js"></script>
+  <script src="js/script.js"></script>
+
+</body>
+</html>
