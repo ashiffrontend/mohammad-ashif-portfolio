@@ -225,7 +225,7 @@ async function syncAdminAccount() {
   const newPasswordHash = bcrypt.hashSync(cleanPassword, 10);
 
   try {
-    // Find admin by role "admin" OR email
+    // Find existing admin to check password update state
     const existingAdmin = await (UserModel as any).findOne({
       $or: [{ role: "admin" }, { email: cleanEmail }]
     });
@@ -237,51 +237,34 @@ async function syncAdminAccount() {
       if (!isPassSame || existingAdmin.email !== cleanEmail) {
         passwordUpdated = true;
       }
+    }
 
-      await (UserModel as any).findOneAndUpdate(
-        { _id: existingAdmin._id },
-        {
-          $set: {
-            email: cleanEmail,
-            passwordHash: newPasswordHash,
-            name: "Mohammad Ashif",
-            role: "admin"
-          }
-        },
-        { new: true, upsert: true }
-      );
+    // Atomic findOneAndUpdate with upsert so every deployment synchronizes ADMIN_EMAIL & ADMIN_PASSWORD
+    const syncedAdmin = await (UserModel as any).findOneAndUpdate(
+      { role: "admin" },
+      {
+        $set: {
+          email: cleanEmail,
+          passwordHash: newPasswordHash,
+          name: "Mohammad Ashif",
+          role: "admin"
+        }
+      },
+      { new: true, upsert: true }
+    );
 
-      console.log("🔒 Admin Synced successfully in MongoDB Atlas");
-      if (passwordUpdated) {
-        console.log("🔑 Password Updated for Admin from environment variables");
-      }
-    } else {
-      await (UserModel as any).findOneAndUpdate(
-        { email: cleanEmail },
-        {
-          $set: {
-            email: cleanEmail,
-            passwordHash: newPasswordHash,
-            name: "Mohammad Ashif",
-            role: "admin"
-          }
-        },
-        { new: true, upsert: true }
-      );
-      console.log("🔒 Admin Synced successfully in MongoDB Atlas");
+    console.log("✅ Admin Synced");
+    if (passwordUpdated || !existingAdmin) {
+      console.log("🔑 Password Updated");
     }
 
     // Startup Verification Logging
-    const adminCheck = await (UserModel as any).findOne({
-      $or: [{ role: "admin" }, { email: cleanEmail }]
-    });
-
     console.log("\n==========================================");
     console.log("=== ADMIN STARTUP VERIFICATION ===");
-    console.log(`MongoDB Connected: ${isMongoConnected}`);
     console.log(`Admin Email: ${cleanEmail}`);
-    console.log(`User Exists in DB: ${!!adminCheck}`);
-    console.log(`Password Hash Exists: ${!!(adminCheck && adminCheck.passwordHash)}`);
+    console.log(`Mongo Connected: ${isMongoConnected}`);
+    console.log(`User Exists: ${!!syncedAdmin}`);
+    console.log(`Password Hash Exists: ${!!(syncedAdmin && syncedAdmin.passwordHash)}`);
     console.log("==========================================\n");
 
   } catch (err: any) {
@@ -529,19 +512,26 @@ async function seedMongoDBData() {
 }
 
 // Connect to MongoDB
-if (MONGODB_URI) {
-  console.log("⏳ Connecting to MongoDB Atlas...");
-  mongoose.connect(MONGODB_URI)
-    .then(async () => {
-      isMongoConnected = true;
-      console.log("✅ MongoDB Connected successfully via MONGODB_URI");
-      await seedMongoDBData();
-    })
-    .catch((err) => {
-      isMongoConnected = false;
-      console.error("❌ MongoDB Connection Error:", err.message || err);
-      console.warn("⚠️ Operating in memory fallback mode until MongoDB is reconnected.");
-    });
+const rawMongoUri = (MONGODB_URI || "").trim().replace(/^["']|["']$/g, '');
+
+if (rawMongoUri) {
+  if (!rawMongoUri.startsWith("mongodb://") && !rawMongoUri.startsWith("mongodb+srv://")) {
+    console.error(`❌ MongoDB Connection Error: Invalid connection string "${rawMongoUri}". URI must start with "mongodb://" or "mongodb+srv://".`);
+    console.warn("⚠️ Operating in memory fallback mode until MONGODB_URI is updated.");
+  } else {
+    console.log("⏳ Connecting to MongoDB Atlas...");
+    mongoose.connect(rawMongoUri)
+      .then(async () => {
+        isMongoConnected = true;
+        console.log("✅ MongoDB Connected");
+        await seedMongoDBData();
+      })
+      .catch((err) => {
+        isMongoConnected = false;
+        console.error("❌ MongoDB Connection Error:", err.message || err);
+        console.warn("⚠️ Operating in memory fallback mode until MongoDB is reconnected.");
+      });
+  }
 } else {
   console.warn("⚠️ MONGODB_URI environment variable not provided. Operating in memory fallback mode.");
 }
