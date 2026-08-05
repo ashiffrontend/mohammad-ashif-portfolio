@@ -212,21 +212,87 @@ const NotificationModel = mongoose.models.Notification || mongoose.model("Notifi
 let isMongoConnected = false;
 
 // ==========================================
-// MONGODB INITIAL SEEDING ENGINE
+// MONGODB INITIAL SEEDING ENGINE & ADMIN SYNC
 // ==========================================
+async function syncAdminAccount() {
+  if (!isMongoConnected) {
+    console.warn("⚠️ Skipping Admin sync: MongoDB is not connected.");
+    return;
+  }
+
+  const cleanEmail = ADMIN_EMAIL.trim().toLowerCase();
+  const cleanPassword = ADMIN_PASSWORD.trim();
+  const newPasswordHash = bcrypt.hashSync(cleanPassword, 10);
+
+  try {
+    // Find admin by role "admin" OR email
+    const existingAdmin = await (UserModel as any).findOne({
+      $or: [{ role: "admin" }, { email: cleanEmail }]
+    });
+
+    let passwordUpdated = false;
+
+    if (existingAdmin) {
+      const isPassSame = bcrypt.compareSync(cleanPassword, existingAdmin.passwordHash);
+      if (!isPassSame || existingAdmin.email !== cleanEmail) {
+        passwordUpdated = true;
+      }
+
+      await (UserModel as any).findOneAndUpdate(
+        { _id: existingAdmin._id },
+        {
+          $set: {
+            email: cleanEmail,
+            passwordHash: newPasswordHash,
+            name: "Mohammad Ashif",
+            role: "admin"
+          }
+        },
+        { new: true, upsert: true }
+      );
+
+      console.log("🔒 Admin Synced successfully in MongoDB Atlas");
+      if (passwordUpdated) {
+        console.log("🔑 Password Updated for Admin from environment variables");
+      }
+    } else {
+      await (UserModel as any).findOneAndUpdate(
+        { email: cleanEmail },
+        {
+          $set: {
+            email: cleanEmail,
+            passwordHash: newPasswordHash,
+            name: "Mohammad Ashif",
+            role: "admin"
+          }
+        },
+        { new: true, upsert: true }
+      );
+      console.log("🔒 Admin Synced successfully in MongoDB Atlas");
+    }
+
+    // Startup Verification Logging
+    const adminCheck = await (UserModel as any).findOne({
+      $or: [{ role: "admin" }, { email: cleanEmail }]
+    });
+
+    console.log("\n==========================================");
+    console.log("=== ADMIN STARTUP VERIFICATION ===");
+    console.log(`MongoDB Connected: ${isMongoConnected}`);
+    console.log(`Admin Email: ${cleanEmail}`);
+    console.log(`User Exists in DB: ${!!adminCheck}`);
+    console.log(`Password Hash Exists: ${!!(adminCheck && adminCheck.passwordHash)}`);
+    console.log("==========================================\n");
+
+  } catch (err: any) {
+    console.error("❌ Error syncing Admin Account in MongoDB:", err.message || err);
+  }
+}
+
 async function seedMongoDBData() {
   try {
-    // 1. Admin User
-    const adminExists = await (UserModel as any).findOne({ role: "admin" });
-    if (!adminExists) {
-      await UserModel.create({
-        email: ADMIN_EMAIL.toLowerCase(),
-        passwordHash: bcrypt.hashSync(ADMIN_PASSWORD, 10),
-        name: "Mohammad Ashif",
-        role: "admin"
-      });
-      console.log("🔒 Admin account seeded in MongoDB Atlas");
-    }
+    // 1. Sync Admin User
+    await syncAdminAccount();
 
     // 2. Analytics Summary Record
     const analyticsExists = await (AnalyticsSummaryModel as any).findOne({ key: "global" });
@@ -464,15 +530,20 @@ async function seedMongoDBData() {
 
 // Connect to MongoDB
 if (MONGODB_URI) {
+  console.log("⏳ Connecting to MongoDB Atlas...");
   mongoose.connect(MONGODB_URI)
     .then(async () => {
       isMongoConnected = true;
-      console.log("✅ MongoDB database connected successfully via MONGODB_URI");
+      console.log("✅ MongoDB Connected successfully via MONGODB_URI");
       await seedMongoDBData();
     })
     .catch((err) => {
-      console.warn("⚠️ MongoDB connection warning (falling back to memory mode):", err.message);
+      isMongoConnected = false;
+      console.error("❌ MongoDB Connection Error:", err.message || err);
+      console.warn("⚠️ Operating in memory fallback mode until MongoDB is reconnected.");
     });
+} else {
+  console.warn("⚠️ MONGODB_URI environment variable not provided. Operating in memory fallback mode.");
 }
 
 // ==========================================
@@ -568,28 +639,96 @@ function authenticateToken(req: any, res: Response, next: NextFunction) {
 // 1. AUTHENTICATION API ROUTES (JWT & Bcrypt & MongoDB)
 // ==========================================
 
+// Debug Admin Status Endpoint
+app.get("/api/debug/admin", async (req: Request, res: Response) => {
+  try {
+    let adminUser: any = null;
+    const cleanEmail = ADMIN_EMAIL.trim().toLowerCase();
+
+    if (isMongoConnected) {
+      adminUser = await (UserModel as any).findOne({
+        $or: [{ role: "admin" }, { email: cleanEmail }]
+      });
+    }
+
+    return res.json({
+      mongoConnected: isMongoConnected,
+      adminExists: !!adminUser,
+      email: adminUser ? adminUser.email : cleanEmail,
+      role: adminUser ? adminUser.role : "admin",
+      hasPasswordHash: !!(adminUser && adminUser.passwordHash)
+    });
+  } catch (err: any) {
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Error fetching admin debug info"
+    });
+  }
+});
+
 // Login Route
 app.post("/api/auth/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
+    console.log("❌ Login Failed: Email or password missing in request body");
     return res.status(400).json({ success: false, message: "Invalid Email or Password" });
   }
 
+  const cleanEmail = email.toString().trim().toLowerCase();
+  const cleanPassword = password.toString().trim();
+
   try {
     let user: any = null;
+
     if (isMongoConnected) {
-      user = await (UserModel as any).findOne({ email: email.toLowerCase() });
+      user = await (UserModel as any).findOne({ email: cleanEmail });
+      if (!user && cleanEmail === ADMIN_EMAIL.trim().toLowerCase()) {
+        user = await (UserModel as any).findOne({ role: "admin" });
+      }
+    }
+
+    // Memory Fallback if Mongo is disconnected or user record matches env directly
+    if (!user && cleanEmail === ADMIN_EMAIL.trim().toLowerCase()) {
+      const envPass = ADMIN_PASSWORD.trim();
+      const isPassMatch = (cleanPassword === envPass) || 
+                          (envPass.startsWith("$2a$") || envPass.startsWith("$2b$") ? bcrypt.compareSync(cleanPassword, envPass) : bcrypt.compareSync(cleanPassword, bcrypt.hashSync(envPass, 10)));
+
+      if (isPassMatch) {
+        console.log(`✅ Login Success (Memory Fallback): Admin "${cleanEmail}" authenticated`);
+        const accessToken = jwt.sign(
+          { id: "admin_env", email: cleanEmail, role: "admin", name: "Mohammad Ashif" },
+          JWT_SECRET,
+          { expiresIn: "1d" }
+        );
+        const refreshToken = jwt.sign(
+          { id: "admin_env" },
+          JWT_REFRESH_SECRET,
+          { expiresIn: "7d" }
+        );
+
+        return res.json({
+          success: true,
+          message: "Authentication successful",
+          accessToken,
+          refreshToken,
+          user: { id: "admin_env", email: cleanEmail, role: "admin", name: "Mohammad Ashif" }
+        });
+      }
     }
 
     if (!user) {
+      console.log(`❌ Login Failed: User not found for email "${cleanEmail}". Reason of failure: User record does not exist in MongoDB`);
       return res.status(401).json({ success: false, message: "Invalid Email or Password" });
     }
 
-    const passwordValid = bcrypt.compareSync(password, user.passwordHash);
+    const passwordValid = bcrypt.compareSync(cleanPassword, user.passwordHash);
     if (!passwordValid) {
+      console.log(`❌ Login Failed: Password mismatch for email "${cleanEmail}". Reason of failure: Invalid password provided`);
       return res.status(401).json({ success: false, message: "Invalid Email or Password" });
     }
+
+    console.log(`✅ Login Success: Admin "${user.email}" authenticated successfully`);
 
     const userId = user._id ? user._id.toString() : user.id;
     const userName = user.name || "Mohammad Ashif";
@@ -610,7 +749,7 @@ app.post("/api/auth/login", async (req: Request, res: Response) => {
     // Record login notification
     await createNotification("Admin Login", `Admin ${userName} signed into the control panel.`, "/admin");
 
-    res.json({
+    return res.json({
       success: true,
       message: "Authentication successful",
       accessToken,
@@ -618,7 +757,8 @@ app.post("/api/auth/login", async (req: Request, res: Response) => {
       user: { id: userId, email: user.email, role: userRole, name: userName }
     });
   } catch (err: any) {
-    res.status(500).json({ success: false, message: "Server error during authentication" });
+    console.error("❌ Login Server Error:", err);
+    return res.status(500).json({ success: false, message: "Server error during authentication" });
   }
 });
 
