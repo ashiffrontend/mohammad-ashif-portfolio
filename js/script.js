@@ -273,12 +273,6 @@ function updateProfileElements() {
         : `${activeProfileImg}?v=${Date.now()}`;
     }
     
-    heroImg.src = finalSrc;
-    heroImg.style.display = 'block';
-    if (heroFallback) heroFallback.style.display = 'none';
-
-    console.log('3. Hero img.src after rendering:', heroImg.src);
-
     heroImg.onerror = () => {
       console.warn('Profile image failed to load, falling back:', DEFAULT_PROFILE_IMAGE);
       if (!isDataUri && heroImg.src !== DEFAULT_PROFILE_IMAGE) {
@@ -288,6 +282,10 @@ function updateProfileElements() {
         if (heroFallback) heroFallback.style.display = 'flex';
       }
     };
+
+    heroImg.src = finalSrc;
+    heroImg.style.display = 'block';
+    if (heroFallback) heroFallback.style.display = 'none';
   }
 
   // Fallback initials

@@ -1653,6 +1653,8 @@ app.get("/api/portfolio", async (req: Request, res: Response) => {
     let adminUser: any = null;
     let savedSettings: any = null;
 
+    const cleanEmail = ADMIN_EMAIL.trim().toLowerCase();
+
     if (isMongoConnected) {
       [projects, skills, certificates, achievements, testimonials, services, blogs, adminUser, savedSettings] = await Promise.all([
         ProjectModel.find().sort({ createdAt: -1 }),
@@ -1667,9 +1669,8 @@ app.get("/api/portfolio", async (req: Request, res: Response) => {
       ]);
     }
 
-    const cleanEmail = ADMIN_EMAIL.trim().toLowerCase();
     const rawProfileImage = savedSettings?.profileImage || adminUser?.profileImage || "";
-    const activeProfileImage = (rawProfileImage && !rawProfileImage.includes("photo-1534528741775-53994a69daeb")) ? rawProfileImage : DEFAULT_PROFILE_IMAGE;
+    const activeProfileImage = (rawProfileImage && rawProfileImage.trim() !== "" && !rawProfileImage.includes("photo-1534528741775-53994a69daeb")) ? rawProfileImage : DEFAULT_PROFILE_IMAGE;
 
     const settings = {
       siteName: savedSettings?.siteName || "Mohammad Ashif | Frontend Web Developer",

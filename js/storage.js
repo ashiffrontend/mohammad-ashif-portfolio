@@ -567,6 +567,7 @@ const SEED_DATA = {
 
 class LocalStorageEngine {
   constructor() {
+    this._cachedSettings = null;
     this.init();
   }
 
@@ -604,7 +605,7 @@ class LocalStorageEngine {
             current.phone = '+91 6202782715';
             current.phoneNote = 'WhatsApp Msg Only';
             current.whatsappDirect = 'https://wa.me/916202782715?text=Hi%20Mohammad%20Ashif,%20I%20would%20like%20to%20discuss%20a%20project!';
-            if (!current.profileImage || current.profileImage.includes('photo-1534528741775-53994a69daeb')) {
+            if (current.profileImage && current.profileImage.includes('photo-1534528741775-53994a69daeb')) {
               current.profileImage = SEED_DATA.settings.profileImage;
             }
             if (!current.bio || current.bio.includes('Senior Frontend Developer with passion') || current.bio.includes('10+ years')) {
@@ -635,6 +636,12 @@ class LocalStorageEngine {
       return true;
     } catch (e) {
       console.error(`Error setting ${key} in LocalStorage:`, e);
+      if (key === STORAGE_KEYS.SETTINGS && value && value.profileImage && value.profileImage.startsWith('data:')) {
+        try {
+          const fallback = { ...value, profileImage: '' };
+          localStorage.setItem(key, JSON.stringify(fallback));
+        } catch (err) {}
+      }
       return false;
     }
   }
@@ -769,13 +776,17 @@ class LocalStorageEngine {
   }
 
   getSettings() { 
+    if (this._cachedSettings) {
+      return { ...SEED_DATA.settings, ...this._cachedSettings };
+    }
     const s = this.getItem(STORAGE_KEYS.SETTINGS);
     if (!s) return SEED_DATA.settings;
     return { ...SEED_DATA.settings, ...s };
   }
   saveSettings(s) { 
+    this._cachedSettings = { ...(this._cachedSettings || {}), ...s };
     const result = this.setItem(STORAGE_KEYS.SETTINGS, s); 
-    window.dispatchEvent(new CustomEvent('ashif_profile_updated', { detail: s }));
+    window.dispatchEvent(new CustomEvent('ashif_profile_updated', { detail: this._cachedSettings }));
     return result;
   }
 
