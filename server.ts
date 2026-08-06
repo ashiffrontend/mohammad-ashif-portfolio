@@ -1639,6 +1639,8 @@ app.get("/api/stats", async (req: Request, res: Response) => {
 // ==========================================
 // 7.1 PORTFOLIO DATA & PROFILE SETTINGS API
 // ==========================================
+const DEFAULT_PROFILE_IMAGE = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80";
+
 app.get("/api/portfolio", async (req: Request, res: Response) => {
   try {
     let projects: any[] = [];
@@ -1666,6 +1668,9 @@ app.get("/api/portfolio", async (req: Request, res: Response) => {
     }
 
     const cleanEmail = ADMIN_EMAIL.trim().toLowerCase();
+    const rawProfileImage = savedSettings?.profileImage || adminUser?.profileImage || "";
+    const activeProfileImage = (rawProfileImage && !rawProfileImage.includes("photo-1534528741775-53994a69daeb")) ? rawProfileImage : DEFAULT_PROFILE_IMAGE;
+
     const settings = {
       siteName: savedSettings?.siteName || "Mohammad Ashif | Frontend Web Developer",
       developerName: savedSettings?.developerName || adminUser?.name || "Mohammad Ashif",
@@ -1681,7 +1686,7 @@ app.get("/api/portfolio", async (req: Request, res: Response) => {
       website: savedSettings?.website || "https://mohdashif.dev",
       location: savedSettings?.location || "Kolkata / New Delhi, India",
       resumeUrl: savedSettings?.resumeUrl || "assets/resume/Mohammad_Ashif_Resume.pdf",
-      profileImage: savedSettings?.profileImage || adminUser?.profileImage || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
+      profileImage: activeProfileImage,
       logoText: "MA",
       defaultTheme: "light"
     };
@@ -1768,7 +1773,7 @@ app.put("/api/profile", authenticateToken, async (req: any, res: Response) => {
       website: website || "https://mohdashif.dev",
       location: location || "Kolkata / New Delhi, India",
       resumeUrl: resumeUrl || "assets/resume/Mohammad_Ashif_Resume.pdf",
-      profileImage: profileImage || "",
+      profileImage: (profileImage && profileImage.trim() !== "" && !profileImage.includes("photo-1534528741775-53994a69daeb")) ? profileImage : DEFAULT_PROFILE_IMAGE,
       logoText: "MA",
       defaultTheme: "light"
     };

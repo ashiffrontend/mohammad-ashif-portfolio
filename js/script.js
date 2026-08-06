@@ -86,6 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initToastAndLightboxes();
   initAnalyticsTrackers();
   initScrollReveal();
+
+  window.addEventListener('ashif_profile_updated', () => {
+    updateProfileElements();
+  });
 });
 
 /* -------------------------------------------------------------------------- */
@@ -248,27 +252,35 @@ function updateProfileElements() {
   if (!window.ashifStorage) return;
   const s = window.ashifStorage.getSettings();
 
+  const DEFAULT_PROFILE_IMAGE = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80";
+  let activeProfileImg = s.profileImage && s.profileImage.trim() !== '' && !s.profileImage.includes('photo-1534528741775-53994a69daeb') 
+    ? s.profileImage 
+    : DEFAULT_PROFILE_IMAGE;
+
+  console.log('GET /api/portfolio profileImage URL:', activeProfileImg);
+
   // Hero Avatar Image & Fallback
   const heroImg = document.getElementById('hero-profile-img');
   const heroFallback = document.getElementById('hero-profile-fallback');
 
-  if (heroImg && heroFallback) {
-    if (s.profileImage && s.profileImage.trim() !== '') {
-      const cacheBuster = s.profileImage.includes('?') 
-        ? `${s.profileImage}&t=${Date.now()}` 
-        : `${s.profileImage}?t=${Date.now()}`;
-      heroImg.src = cacheBuster;
-      heroImg.style.display = 'block';
-      heroFallback.style.display = 'none';
+  if (heroImg) {
+    const cacheBuster = activeProfileImg.includes('?') 
+      ? `${activeProfileImg}&v=${Date.now()}` 
+      : `${activeProfileImg}?v=${Date.now()}`;
+    
+    heroImg.src = cacheBuster;
+    heroImg.style.display = 'block';
+    if (heroFallback) heroFallback.style.display = 'none';
 
-      heroImg.onerror = () => {
+    heroImg.onerror = () => {
+      console.warn('Profile image failed to load, falling back to default profile image:', DEFAULT_PROFILE_IMAGE);
+      if (heroImg.src !== DEFAULT_PROFILE_IMAGE) {
+        heroImg.src = DEFAULT_PROFILE_IMAGE;
+      } else {
         heroImg.style.display = 'none';
-        heroFallback.style.display = 'flex';
-      };
-    } else {
-      heroImg.style.display = 'none';
-      heroFallback.style.display = 'flex';
-    }
+        if (heroFallback) heroFallback.style.display = 'flex';
+      }
+    };
   }
 
   // Fallback initials

@@ -1129,6 +1129,8 @@ function renderProfileAdmin() {
   const container = document.getElementById('profile-admin-panel');
   if (!container) return;
   const s = window.ashifStorage.getSettings();
+  const DEFAULT_PROFILE_IMAGE = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80";
+  const activeProfImg = (s.profileImage && s.profileImage.trim() !== '' && !s.profileImage.includes('photo-1534528741775-53994a69daeb')) ? s.profileImage : DEFAULT_PROFILE_IMAGE;
   const currentWebsite = s.website || s.siteUrl || window.location.origin;
 
   container.innerHTML = `
@@ -1142,7 +1144,7 @@ function renderProfileAdmin() {
           
           <div id="prof-dropzone" class="image-dropzone" style="margin-bottom: 1rem;">
             <div class="profile-avatar-circle" style="width: 90px; height: 90px; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, #2563eb, #38bdf8); display: flex; align-items: center; justify-content: center; position: relative;">
-              <img id="admin-avatar-preview" src="${s.profileImage || ''}" alt="Profile Avatar" style="width: 100%; height: 100%; object-fit: cover; display: ${s.profileImage ? 'block' : 'none'};" onerror="this.style.display='none'; document.getElementById('admin-avatar-fallback').style.display='flex';" />
+              <img id="admin-avatar-preview" src="${activeProfImg}" alt="Profile Avatar" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.style.display='none'; document.getElementById('admin-avatar-fallback').style.display='flex';" />
               <div id="admin-avatar-fallback" class="avatar-fallback" style="display: ${!s.profileImage ? 'flex' : 'none'}; font-size: 2rem; font-weight: 800; color: #ffffff; align-items: center; justify-content: center; width: 100%; height: 100%;">
                 ${(s.developerName || 'MA').split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}
               </div>
@@ -1172,7 +1174,7 @@ function renderProfileAdmin() {
 
           <div class="form-group">
             <label>Image URL Direct Link</label>
-            <input type="url" id="prof-img" class="form-input" value="${s.profileImage || ''}" placeholder="https://images.unsplash.com/..." />
+            <input type="url" id="prof-img" class="form-input" value="${activeProfImg}" placeholder="https://images.unsplash.com/..." />
           </div>
         </div>
 
@@ -1281,7 +1283,7 @@ function renderProfileAdmin() {
           <span style="display: inline-block; padding: 0.2rem 0.6rem; font-size: 0.72rem; font-weight: 700; background: rgba(37, 99, 235, 0.1); color: var(--primary-blue); border-radius: 20px; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Live Preview Card</span>
           
           <div class="profile-preview-avatar">
-            <img id="card-preview-img" src="${s.profileImage || ''}" alt="Avatar Preview" style="display: ${s.profileImage ? 'block' : 'none'};" onerror="this.style.display='none'; document.getElementById('card-preview-fallback').style.display='flex';" />
+            <img id="card-preview-img" src="${activeProfImg}" alt="Avatar Preview" style="display: block;" onerror="this.style.display='none'; document.getElementById('card-preview-fallback').style.display='flex';" />
             <div id="card-preview-fallback" class="avatar-fallback" style="display: ${!s.profileImage ? 'flex' : 'none'};">
               ${(s.developerName || 'MA').split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}
             </div>

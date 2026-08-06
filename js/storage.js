@@ -556,7 +556,7 @@ const SEED_DATA = {
     website: 'https://mohdashif.dev',
     location: 'Kolkata / New Delhi, India',
     resumeUrl: 'assets/resume/Mohammad_Ashif_Resume.pdf',
-    profileImage: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80',
+    profileImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80',
     logoText: 'MA',
     defaultTheme: 'light',
     adminPin: 'ashif2026',
@@ -604,6 +604,9 @@ class LocalStorageEngine {
             current.phone = '+91 6202782715';
             current.phoneNote = 'WhatsApp Msg Only';
             current.whatsappDirect = 'https://wa.me/916202782715?text=Hi%20Mohammad%20Ashif,%20I%20would%20like%20to%20discuss%20a%20project!';
+            if (!current.profileImage || current.profileImage.includes('photo-1534528741775-53994a69daeb')) {
+              current.profileImage = SEED_DATA.settings.profileImage;
+            }
             if (!current.bio || current.bio.includes('Senior Frontend Developer with passion') || current.bio.includes('10+ years')) {
               current.bio = SEED_DATA.settings.bio;
               current.developerTitle = SEED_DATA.settings.developerTitle;
