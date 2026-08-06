@@ -194,6 +194,28 @@ const NotificationSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+// 13. Settings Model
+const SettingsSchema = new mongoose.Schema({
+  key: { type: String, default: "global", unique: true },
+  siteName: { type: String, default: "Mohammad Ashif | Frontend Web Developer" },
+  developerName: { type: String, default: "Mohammad Ashif" },
+  developerTitle: { type: String, default: "Frontend Web Developer | BCA Student @ Aliah University ('27)" },
+  bio: { type: String },
+  email: { type: String },
+  phone: { type: String },
+  phoneNote: { type: String, default: "WhatsApp Msg Only" },
+  whatsappDirect: { type: String },
+  github: { type: String },
+  linkedin: { type: String },
+  whatsapp: { type: String },
+  website: { type: String },
+  location: { type: String },
+  resumeUrl: { type: String },
+  profileImage: { type: String },
+  logoText: { type: String, default: "MA" },
+  defaultTheme: { type: String, default: "light" }
+}, { timestamps: true });
+
 // Compile Models
 const UserModel = mongoose.models.User || mongoose.model("User", UserSchema);
 const ProjectModel = mongoose.models.Project || mongoose.model("Project", ProjectSchema);
@@ -207,6 +229,7 @@ const AchievementModel = mongoose.models.Achievement || mongoose.model("Achievem
 const TestimonialModel = mongoose.models.Testimonial || mongoose.model("Testimonial", TestimonialSchema);
 const ServiceModel = mongoose.models.Service || mongoose.model("Service", ServiceSchema);
 const NotificationModel = mongoose.models.Notification || mongoose.model("Notification", NotificationSchema);
+const SettingsModel = mongoose.models.Settings || mongoose.model("Settings", SettingsSchema);
 
 // Connection Status Flag
 let isMongoConnected = false;
@@ -552,6 +575,14 @@ const apiLimiter = rateLimit({
   validate: { xForwardedForHeader: false, forwardedHeader: false }
 });
 app.use("/api/", apiLimiter);
+
+// Disable caching for all API responses so clients always receive fresh portfolio data
+app.use("/api", (req: Request, res: Response, next: NextFunction) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  next();
+});
 
 // Nodemailer Transporter Setup
 const mailTransporter = nodemailer.createTransport({
@@ -1568,7 +1599,7 @@ app.get("/api/stats", async (req: Request, res: Response) => {
 });
 
 // ==========================================
-// 7.1 PORTFOLIO DATA API ROUTE
+// 7.1 PORTFOLIO DATA & PROFILE SETTINGS API
 // ==========================================
 app.get("/api/portfolio", async (req: Request, res: Response) => {
   try {
@@ -1580,9 +1611,10 @@ app.get("/api/portfolio", async (req: Request, res: Response) => {
     let services: any[] = [];
     let blogs: any[] = [];
     let adminUser: any = null;
+    let savedSettings: any = null;
 
     if (isMongoConnected) {
-      [projects, skills, certificates, achievements, testimonials, services, blogs, adminUser] = await Promise.all([
+      [projects, skills, certificates, achievements, testimonials, services, blogs, adminUser, savedSettings] = await Promise.all([
         ProjectModel.find().sort({ createdAt: -1 }),
         SkillModel.find().sort({ category: 1 }),
         CertificateModel.find().sort({ issueDate: -1 }),
@@ -1590,27 +1622,28 @@ app.get("/api/portfolio", async (req: Request, res: Response) => {
         TestimonialModel.find().sort({ createdAt: -1 }),
         ServiceModel.find(),
         BlogPostModel.find().sort({ createdAt: -1 }),
-        (UserModel as any).findOne({ role: "admin" })
+        (UserModel as any).findOne({ role: "admin" }),
+        (SettingsModel as any).findOne({ key: "global" })
       ]);
     }
 
     const cleanEmail = ADMIN_EMAIL.trim().toLowerCase();
     const settings = {
-      siteName: "Mohammad Ashif | Frontend Web Developer",
-      developerName: adminUser?.name || "Mohammad Ashif",
-      developerTitle: "Frontend Web Developer | BCA Student @ Aliah University ('27)",
-      bio: "BCA Student at Aliah University (Graduating 2027) • Frontend Web Developer • 6 Months Internship Experience • 1 Year Web Development Experience • Built 10+ Real-World Projects • Available for Freelance & Remote Work",
-      email: adminUser?.email || cleanEmail,
-      phone: "+91 6202782715",
+      siteName: savedSettings?.siteName || "Mohammad Ashif | Frontend Web Developer",
+      developerName: savedSettings?.developerName || adminUser?.name || "Mohammad Ashif",
+      developerTitle: savedSettings?.developerTitle || "Frontend Web Developer | BCA Student @ Aliah University ('27)",
+      bio: savedSettings?.bio || "BCA Student at Aliah University (Graduating 2027) • Frontend Web Developer • 6 Months Internship Experience • 1 Year Web Development Experience • Built 10+ Real-World Projects • Available for Freelance & Remote Work",
+      email: savedSettings?.email || adminUser?.email || cleanEmail,
+      phone: savedSettings?.phone || "+91 6202782715",
       phoneNote: "WhatsApp Msg Only",
       whatsappDirect: "https://wa.me/916202782715?text=Hi%20Mohammad%20Ashif,%20I%20would%20like%20to%20discuss%20a%20project!",
-      github: "https://github.com/ashiffrontend",
-      linkedin: "https://www.linkedin.com/in/mohd-ashif-095963425/",
+      github: savedSettings?.github || "https://github.com/ashiffrontend",
+      linkedin: savedSettings?.linkedin || "https://www.linkedin.com/in/mohd-ashif-095963425/",
       whatsapp: "https://whatsapp.com/channel/0029VbC6oUdHAdNeVu2Ijp2c",
-      website: "https://mohdashif.dev",
-      location: "Kolkata / New Delhi, India",
-      resumeUrl: "assets/resume/Mohammad_Ashif_Resume.pdf",
-      profileImage: adminUser?.profileImage || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
+      website: savedSettings?.website || "https://mohdashif.dev",
+      location: savedSettings?.location || "Kolkata / New Delhi, India",
+      resumeUrl: savedSettings?.resumeUrl || "assets/resume/Mohammad_Ashif_Resume.pdf",
+      profileImage: savedSettings?.profileImage || adminUser?.profileImage || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
       logoText: "MA",
       defaultTheme: "light"
     };
@@ -1631,6 +1664,93 @@ app.get("/api/portfolio", async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message || "Error fetching portfolio data" });
   }
+});
+
+// Save or Update Admin Profile & Portfolio Settings
+app.put("/api/profile", authenticateToken, async (req: any, res: Response) => {
+  try {
+    const {
+      profileImage,
+      developerName,
+      developerTitle,
+      bio,
+      location,
+      email,
+      phone,
+      resumeUrl,
+      github,
+      linkedin,
+      website
+    } = req.body;
+
+    let savedSettings: any = null;
+    if (isMongoConnected) {
+      savedSettings = await (SettingsModel as any).findOneAndUpdate(
+        { key: "global" },
+        {
+          $set: {
+            profileImage,
+            developerName,
+            developerTitle,
+            bio,
+            location,
+            email,
+            phone,
+            resumeUrl,
+            github,
+            linkedin,
+            website
+          }
+        },
+        { new: true, upsert: true }
+      );
+
+      if (req.user?.id) {
+        await (UserModel as any).findByIdAndUpdate(req.user.id, {
+          profileImage,
+          name: developerName,
+          email
+        });
+      }
+    }
+
+    const cleanEmail = (email || ADMIN_EMAIL).trim().toLowerCase();
+    const updatedSettings = {
+      siteName: "Mohammad Ashif | Frontend Web Developer",
+      developerName: developerName || "Mohammad Ashif",
+      developerTitle: developerTitle || "Frontend Web Developer | BCA Student @ Aliah University ('27)",
+      bio: bio || "",
+      email: cleanEmail,
+      phone: phone || "+91 6202782715",
+      phoneNote: "WhatsApp Msg Only",
+      whatsappDirect: "https://wa.me/916202782715?text=Hi%20Mohammad%20Ashif,%20I%20would%20like%20to%20discuss%20a%20project!",
+      github: github || "https://github.com/ashiffrontend",
+      linkedin: linkedin || "https://www.linkedin.com/in/mohd-ashif-095963425/",
+      whatsapp: "https://whatsapp.com/channel/0029VbC6oUdHAdNeVu2Ijp2c",
+      website: website || "https://mohdashif.dev",
+      location: location || "Kolkata / New Delhi, India",
+      resumeUrl: resumeUrl || "assets/resume/Mohammad_Ashif_Resume.pdf",
+      profileImage: profileImage || "",
+      logoText: "MA",
+      defaultTheme: "light"
+    };
+
+    res.json({
+      success: true,
+      message: "Profile and portfolio settings updated successfully",
+      settings: updatedSettings
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message || "Failed to update profile settings" });
+  }
+});
+
+app.put("/api/settings", authenticateToken, async (req: any, res: Response) => {
+  const handler = app._router.stack.find((layer: any) => layer.route && layer.route.path === "/api/profile" && layer.route.methods.put);
+  if (handler) {
+    return handler.route.stack[0].handle(req, res);
+  }
+  res.json({ success: true, message: "Settings endpoint active" });
 });
 
 // API 404 catch-all: Return JSON 404 for unhandled /api/* routes so they NEVER fall through to index.html

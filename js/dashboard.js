@@ -1508,7 +1508,7 @@ function renderProfileAdmin() {
       saveBtn.innerHTML = '⏳ Saving Changes...';
     }
 
-    setTimeout(() => {
+    (async () => {
       const current = window.ashifStorage.getSettings();
       current.profileImage = imgUrlInput.value.trim();
       current.developerName = fullName;
@@ -1523,8 +1523,28 @@ function renderProfileAdmin() {
       current.website = websiteInput.value.trim();
       current.siteUrl = websiteInput.value.trim();
 
-      // Save to Local Storage
-      window.ashifStorage.saveSettings(current);
+      const token = localStorage.getItem('ashif_jwt_token');
+      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.API_BASE || (window.location.hostname.includes('vercel.app') ? 'https://mohdashif-portfolio-backend.onrender.com' : ''));
+
+      try {
+        const res = await fetch(`${apiBase}/api/profile`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : ''
+          },
+          body: JSON.stringify(current)
+        });
+        const data = await res.json();
+        if (data.success && data.settings) {
+          window.ashifStorage.saveSettings(data.settings);
+        } else {
+          window.ashifStorage.saveSettings(current);
+        }
+      } catch (err) {
+        console.warn('Backend profile update failed, saving locally:', err);
+        window.ashifStorage.saveSettings(current);
+      }
 
       if (saveBtn) {
         saveBtn.disabled = false;
@@ -1536,9 +1556,12 @@ function renderProfileAdmin() {
         window.showToast('Profile saved successfully & live portfolio updated!', 'success');
       }
 
+      // Dispatch event to force all views to refresh
+      window.dispatchEvent(new CustomEvent('ashif_profile_updated'));
+
       // Re-render header & preview updates
       renderProfileAdmin();
-    }, 450);
+    })();
   });
 }
 

@@ -2,11 +2,85 @@
  * PUBLIC WEBSITE CONTROLLER - Mohammad Ashif Portfolio
  */
 
+// Global API Base URL Resolution Helper
+function getApiBase() {
+  if (window.API_BASE) return window.API_BASE;
+  if (typeof process !== 'undefined' && process.env && process.env.VITE_API_BASE) return process.env.VITE_API_BASE;
+  if (window.location.hostname.includes('vercel.app')) {
+    return 'https://mohdashif-portfolio-backend.onrender.com';
+  }
+  return '';
+}
+
+// Unregister stale service workers and clear browser cache storage if present
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    for (const registration of registrations) {
+      registration.unregister();
+    }
+  });
+  if (window.caches) {
+    caches.keys().then(names => {
+      for (const name of names) {
+        caches.delete(name);
+      }
+    });
+  }
+}
+
+// Synchronize latest live portfolio & profile data from Render backend API
+async function syncPortfolioDataFromApi() {
+  try {
+    const apiBase = getApiBase();
+    const res = await fetch(`${apiBase}/api/portfolio?t=${Date.now()}`, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    });
+    if (!res.ok) return;
+    const json = await res.json();
+    if (json.success && json.data) {
+      const { settings, projects, skills, certificates, achievements, testimonials, services, blogs } = json.data;
+      if (settings && window.ashifStorage) {
+        window.ashifStorage.saveSettings(settings);
+      }
+      if (projects && window.ashifStorage) {
+        window.ashifStorage.saveProjects(projects);
+      }
+      if (skills && window.ashifStorage) {
+        window.ashifStorage.saveSkills(skills);
+      }
+      if (certificates && window.ashifStorage) {
+        window.ashifStorage.saveCertificates(certificates);
+      }
+      if (achievements && window.ashifStorage) {
+        window.ashifStorage.saveAchievements(achievements);
+      }
+      if (testimonials && window.ashifStorage) {
+        window.ashifStorage.saveTestimonials(testimonials);
+      }
+      if (services && window.ashifStorage) {
+        window.ashifStorage.saveServices(services);
+      }
+      if (blogs && window.ashifStorage) {
+        window.ashifStorage.saveBlogs(blogs);
+      }
+      if (typeof renderAllSections === 'function') {
+        renderAllSections();
+      }
+    }
+  } catch (err) {
+    console.warn('Backend API sync warning:', err);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initNavbarAndScroll();
   initTypingEffect();
   initParticleCanvas();
   renderAllSections();
+  syncPortfolioDataFromApi();
   initProjectFiltersAndSearch();
   initContactForm();
   initToastAndLightboxes();
@@ -180,7 +254,10 @@ function updateProfileElements() {
 
   if (heroImg && heroFallback) {
     if (s.profileImage && s.profileImage.trim() !== '') {
-      heroImg.src = s.profileImage;
+      const cacheBuster = s.profileImage.includes('?') 
+        ? `${s.profileImage}&t=${Date.now()}` 
+        : `${s.profileImage}?t=${Date.now()}`;
+      heroImg.src = cacheBuster;
       heroImg.style.display = 'block';
       heroFallback.style.display = 'none';
 
