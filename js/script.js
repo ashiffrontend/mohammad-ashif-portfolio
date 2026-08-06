@@ -5,10 +5,13 @@
 // Global API Base URL Resolution Helper
 function getApiBase() {
   if (window.API_BASE) return window.API_BASE;
-  if (typeof process !== 'undefined' && process.env && process.env.VITE_API_BASE) return process.env.VITE_API_BASE;
+  if (typeof process !== 'undefined' && process.env && process.env.VITE_API_BASE)
+    return process.env.VITE_API_BASE;
+
   if (window.location.hostname.includes('vercel.app')) {
-    return 'https://mohdashif-portfolio-backend.onrender.com';
+    return '/api';
   }
+
   return '';
 }
 

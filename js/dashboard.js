@@ -1526,7 +1526,12 @@ function renderProfileAdmin() {
       current.siteUrl = websiteInput.value.trim();
 
       const token = localStorage.getItem('ashif_jwt_token');
-      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.API_BASE || (window.location.hostname.includes('vercel.app') ? 'https://mohdashif-portfolio-backend.onrender.com' : ''));
+      const apiBase =
+        (typeof getApiBase === 'function')
+            ? getApiBase()
+         : (window.API_BASE || (window.location.hostname.includes('vercel.app')
+              ? '/api'
+               : ''));
 
       try {
         const res = await fetch(`${apiBase}/api/profile`, {
