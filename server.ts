@@ -534,12 +534,50 @@ async function seedMongoDBData() {
   }
 }
 
+// Helper to sanitize & encode username/password in MongoDB connection URIs
+function sanitizeMongoUri(uri: string): string {
+  if (!uri) return uri;
+  let cleanUri = uri.trim().replace(/^["']|["']$/g, "").trim();
+  const match = cleanUri.match(/^(mongodb(?:\+srv)?:\/\/)(.*)$/i);
+  if (!match) return cleanUri;
+  const scheme = match[1];
+  let rest = match[2];
+  
+  let pathAndQuery = "";
+  const pathStartPos = rest.search(/[\/\?]/);
+  if (pathStartPos !== -1) {
+    pathAndQuery = rest.substring(pathStartPos);
+    rest = rest.substring(0, pathStartPos);
+  }
+  
+  const lastAtIndex = rest.lastIndexOf("@");
+  if (lastAtIndex === -1) return cleanUri;
+  
+  const userInfo = rest.substring(0, lastAtIndex);
+  const host = rest.substring(lastAtIndex + 1);
+  
+  const colonIndex = userInfo.indexOf(":");
+  if (colonIndex === -1) {
+    let u = userInfo;
+    try { u = decodeURIComponent(u); } catch {}
+    return `${scheme}${encodeURIComponent(u)}@${host}${pathAndQuery}`;
+  }
+  
+  let u = userInfo.substring(0, colonIndex);
+  let p = userInfo.substring(colonIndex + 1);
+  try { u = decodeURIComponent(u); } catch {}
+  try { p = decodeURIComponent(p); } catch {}
+  
+  return `${scheme}${encodeURIComponent(u)}:${encodeURIComponent(p)}@${host}${pathAndQuery}`;
+}
+
 // Connect to MongoDB
 const rawMongoUri = (process.env.MONGODB_URI || process.env.MONGO_URI || "").trim().replace(/^["']|["']$/g, '').trim();
+const formattedMongoUri = sanitizeMongoUri(rawMongoUri);
 
-if (rawMongoUri) {
+if (formattedMongoUri) {
   console.log("⏳ Connecting to MongoDB Atlas...");
-  mongoose.connect(rawMongoUri)
+  mongoose.connect(formattedMongoUri)
     .then(async () => {
       isMongoConnected = true;
       console.log("✅ MongoDB Connected");
