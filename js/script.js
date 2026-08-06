@@ -8,10 +8,6 @@ function getApiBase() {
   if (typeof process !== 'undefined' && process.env && process.env.VITE_API_BASE)
     return process.env.VITE_API_BASE;
 
-  if (window.location.hostname.includes('vercel.app')) {
-    return '/api';
-  }
-
   return '';
 }
 

@@ -1528,10 +1528,8 @@ function renderProfileAdmin() {
       const token = localStorage.getItem('ashif_jwt_token');
       const apiBase =
         (typeof getApiBase === 'function')
-            ? getApiBase()
-         : (window.API_BASE || (window.location.hostname.includes('vercel.app')
-              ? '/api'
-               : ''));
+          ? getApiBase()
+          : (window.API_BASE || '');
 
       try {
         const res = await fetch(`${apiBase}/api/profile`, {
