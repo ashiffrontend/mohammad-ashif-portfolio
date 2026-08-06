@@ -18,10 +18,10 @@
       ]
     }
   ],
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://mohdashif-portfolio-backend.onrender.com/api/:path*"
-    }
-  ]
+"rewrites": [
+  {
+    "source": "/api/:path*",
+    "destination": "https://mohammad-ashif-portfolio.onrender.com/api/:path*"
+  }
+]
 }
