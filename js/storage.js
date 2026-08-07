@@ -568,24 +568,23 @@ const SEED_DATA = {
 class LocalStorageEngine {
   constructor() {
     this._cachedSettings = null;
+    this._cachedProjects = null;
     this.init();
   }
 
   init() {
-    // Seed initial data if missing or update settings/projects if with old defaults
+    // Completely remove legacy projects from localStorage to prevent QuotaExceededError
+    try {
+      localStorage.removeItem('ashif_projects');
+    } catch (e) {}
+
+    // Seed initial data if missing (excluding projects, which are managed via MongoDB API)
     Object.keys(SEED_DATA).forEach(key => {
+      if (key === 'projects') return; // Never store projects in localStorage
       const storageKey = STORAGE_KEYS[key.toUpperCase()];
       if (storageKey) {
         if (!localStorage.getItem(storageKey)) {
           localStorage.setItem(storageKey, JSON.stringify(SEED_DATA[key]));
-        } else if (key === 'projects') {
-          // Sync new real projects if old dummy data exists or if list is incomplete
-          try {
-            const current = JSON.parse(localStorage.getItem(storageKey));
-            if (!Array.isArray(current) || current.length === 0 || current.some(p => p.id === 'p1' || p.title.includes('Vercel-Style') || p.title.includes('Apple Glassmorphic'))) {
-              localStorage.setItem(storageKey, JSON.stringify(SEED_DATA.projects));
-            }
-          } catch(e) {}
         } else if (key === 'services') {
           // Sync new services if old pricing data exists
           try {
@@ -646,9 +645,18 @@ class LocalStorageEngine {
     }
   }
 
-  // Specialized Getters & Setters
-  getProjects() { return this.getItem(STORAGE_KEYS.PROJECTS) || []; }
-  saveProjects(projects) { return this.setItem(STORAGE_KEYS.PROJECTS, projects); }
+  // Specialized Getters & Setters - Projects stored in-memory only (MongoDB API backed)
+  getProjects() { 
+    return (this._cachedProjects && Array.isArray(this._cachedProjects) && this._cachedProjects.length > 0) 
+      ? this._cachedProjects 
+      : (SEED_DATA.projects || []); 
+  }
+  saveProjects(projects) { 
+    if (Array.isArray(projects)) {
+      this._cachedProjects = projects;
+    }
+    return true; 
+  }
 
   likeProject(projectId) {
     const projects = this.getProjects();

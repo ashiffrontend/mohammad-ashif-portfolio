@@ -7,6 +7,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import mongoose from "mongoose";
+import multer from "multer";
+import fs from "fs";
 import { createServer as createViteServer } from "vite";
 
 const app = express();
@@ -603,6 +605,30 @@ app.use(cors());
 app.use(express.json({ limit: "15mb" }));
 app.use(express.urlencoded({ extended: true, limit: "15mb" }));
 
+// Uploads Folder & Static File Serving
+const uploadsDir = path.join(process.cwd(), "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use("/uploads", express.static(uploadsDir));
+
+// Multer Disk Storage Setup
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname) || ".png";
+    const uniqueName = `project_${Date.now()}_${Math.floor(Math.random() * 10000)}${ext}`;
+    cb(null, uniqueName);
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
+
 // Rate limiting for public API routes
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -844,8 +870,18 @@ app.post("/api/auth/forgot-password", async (req: Request, res: Response) => {
 });
 
 // ==========================================
-// 2. PROJECT MANAGEMENT API ROUTES (MongoDB)
+// 2. PROJECT MANAGEMENT API ROUTES (MongoDB) & IMAGE UPLOADS
 // ==========================================
+
+// Upload Image Endpoint (Multipart/Form-Data using Multer)
+app.post("/api/upload", authenticateToken, upload.single("image"), (req: any, res: Response) => {
+  if (req.user.role !== "admin") return res.status(403).json({ success: false, message: "Admin access required" });
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: "No image file provided" });
+  }
+  const imageUrl = `/uploads/${req.file.filename}`;
+  res.json({ success: true, url: imageUrl, imageUrl });
+});
 
 // Get All Projects
 app.get("/api/projects", async (req: Request, res: Response) => {

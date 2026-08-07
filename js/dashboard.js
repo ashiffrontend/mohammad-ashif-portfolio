@@ -153,15 +153,37 @@ function renderOverviewCharts(weeklyGraphData = []) {
 /* -------------------------------------------------------------------------- */
 /* 2. Projects Manager (CRUD)                                                 */
 /* -------------------------------------------------------------------------- */
-function renderProjectsTable() {
+let projectsFetchedFromBackend = false;
+
+async function fetchProjectsFromBackend() {
+  const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.API_BASE || '');
+  try {
+    const res = await fetch(`${apiBase}/api/projects?t=${Date.now()}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        window.ashifStorage.saveProjects(data.data);
+      }
+    }
+  } catch (e) {
+    console.warn('Could not fetch projects from API:', e);
+  }
+}
+
+async function renderProjectsTable() {
   const tableBody = document.getElementById('projects-table-body');
   if (!tableBody) return;
+
+  if (!projectsFetchedFromBackend) {
+    projectsFetchedFromBackend = true;
+    await fetchProjectsFromBackend();
+  }
 
   const projects = window.ashifStorage.getProjects();
 
   tableBody.innerHTML = projects.map(p => `
     <tr>
-      <td><img src="${p.image}" class="table-thumb" alt="${p.title}" /></td>
+      <td><img src="${p.image}" class="table-thumb" alt="${p.title}" onerror="this.src='https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80'" /></td>
       <td><strong>${p.title}</strong></td>
       <td><span class="admin-badge-pill">${p.category}</span></td>
       <td>${(p.technology || []).join(', ')}</td>
@@ -258,19 +280,38 @@ function openProjectModal(projectId = null) {
 
   overlay.classList.add('show');
 
-  // Device File Upload listener
+  // Device File Upload listener - uploads directly to backend server via multer
   const fileInput = document.getElementById('p-image-file');
   const imageInput = document.getElementById('p-image');
   if (fileInput) {
-    fileInput.addEventListener('change', (evt) => {
+    fileInput.addEventListener('change', async (evt) => {
       const file = evt.target.files[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          if (imageInput) imageInput.value = e.target.result;
-          if (window.showToast) window.showToast('Screenshot uploaded from device!', 'success');
-        };
-        reader.readAsDataURL(file);
+        if (window.showToast) window.showToast('Uploading screenshot to server...', 'info');
+        const token = localStorage.getItem('ashif_jwt_token');
+        const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.API_BASE || '');
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+          const res = await fetch(`${apiBase}/api/upload`, {
+            method: 'POST',
+            headers: {
+              'Authorization': token ? `Bearer ${token}` : ''
+            },
+            body: formData
+          });
+          const data = await res.json();
+          if (data.success && data.url) {
+            if (imageInput) imageInput.value = data.url;
+            if (window.showToast) window.showToast('Screenshot uploaded to server!', 'success');
+          } else {
+            if (window.showToast) window.showToast('Upload failed: ' + (data.message || 'Server upload error'), 'error');
+          }
+        } catch (err) {
+          console.error('File upload failed:', err);
+          if (window.showToast) window.showToast('Image upload failed. Please try again.', 'error');
+        }
       }
     });
   }
@@ -317,30 +358,14 @@ function openProjectModal(projectId = null) {
           allProjects.unshift(data.data);
         }
         window.ashifStorage.saveProjects(allProjects);
-      } else {
-        let allProjects = window.ashifStorage.getProjects();
-        const existingIdx = allProjects.findIndex(item => item.id === id);
-        if (existingIdx >= 0) {
-          allProjects[existingIdx] = newProject;
-        } else {
-          allProjects.unshift(newProject);
-        }
-        window.ashifStorage.saveProjects(allProjects);
       }
     } catch (err) {
-      console.warn('Backend project save error, storing locally:', err);
-      let allProjects = window.ashifStorage.getProjects();
-      const existingIdx = allProjects.findIndex(item => item.id === id);
-      if (existingIdx >= 0) {
-        allProjects[existingIdx] = newProject;
-      } else {
-        allProjects.unshift(newProject);
-      }
-      window.ashifStorage.saveProjects(allProjects);
+      console.warn('Backend project save error:', err);
     }
 
     overlay.classList.remove('show');
-    if (window.showToast) window.showToast('Project saved successfully!', 'success');
+    if (window.showToast) window.showToast('Project saved successfully to MongoDB!', 'success');
+    await fetchProjectsFromBackend();
     renderAdminDashboardViews();
   });
 }
@@ -361,10 +386,8 @@ async function deleteProject(id) {
       console.warn('Backend project delete error:', err);
     }
 
-    let projects = window.ashifStorage.getProjects();
-    projects = projects.filter(p => p.id !== id);
-    window.ashifStorage.saveProjects(projects);
-    if (window.showToast) window.showToast('Project deleted.', 'info');
+    await fetchProjectsFromBackend();
+    if (window.showToast) window.showToast('Project deleted from MongoDB.', 'info');
     renderAdminDashboardViews();
   }
 }
