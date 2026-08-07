@@ -855,7 +855,8 @@ app.get("/api/projects", async (req: Request, res: Response) => {
       projects = await (ProjectModel as any).find().sort({ createdAt: -1 });
     }
     res.json({ success: true, count: projects.length, data: projects });
-  } catch (err) {
+  } catch (err: any) {
+    console.error("❌ Error fetching projects from MongoDB:", err.message || err);
     res.status(500).json({ success: false, message: "Error loading projects" });
   }
 });
@@ -865,8 +866,9 @@ app.post("/api/projects", authenticateToken, async (req: any, res: Response) => 
   if (req.user.role !== "admin") return res.status(403).json({ success: false, message: "Admin access required" });
 
   try {
+    const projId = req.body.id || "proj_" + Date.now();
     const newProj = {
-      id: req.body.id || "proj_" + Date.now(),
+      id: projId,
       title: req.body.title,
       description: req.body.description,
       image: req.body.image,
@@ -882,13 +884,18 @@ app.post("/api/projects", authenticateToken, async (req: any, res: Response) => 
 
     let savedProj;
     if (isMongoConnected) {
-      savedProj = await (ProjectModel as any).create(newProj);
+      savedProj = await (ProjectModel as any).findOneAndUpdate(
+        { id: projId },
+        newProj,
+        { new: true, upsert: true, setDefaultsOnInsert: true }
+      );
     }
 
     await createNotification("New Project", `New project "${req.body.title}" added to showcase.`, "/#projects");
 
     res.status(201).json({ success: true, message: "Project created in MongoDB", data: savedProj || newProj });
   } catch (err: any) {
+    console.error("❌ Error saving project to MongoDB:", err.message || err);
     res.status(500).json({ success: false, message: err.message || "Failed to create project" });
   }
 });
@@ -900,12 +907,11 @@ app.put("/api/projects/:id", authenticateToken, async (req: any, res: Response) 
   try {
     let updated;
     if (isMongoConnected) {
-      updated = await (ProjectModel as any).findOneAndUpdate({ id: req.params.id }, req.body, { new: true });
+      updated = await (ProjectModel as any).findOneAndUpdate({ id: req.params.id }, req.body, { new: true, upsert: true, setDefaultsOnInsert: true });
     }
-    if (!updated) return res.status(404).json({ success: false, message: "Project not found" });
-
-    res.json({ success: true, message: "Project updated in MongoDB", data: updated });
+    res.json({ success: true, message: "Project updated in MongoDB", data: updated || req.body });
   } catch (err: any) {
+    console.error("❌ Error updating project in MongoDB:", err.message || err);
     res.status(500).json({ success: false, message: err.message || "Failed to update project" });
   }
 });
@@ -919,7 +925,8 @@ app.delete("/api/projects/:id", authenticateToken, async (req: any, res: Respons
       await (ProjectModel as any).deleteOne({ id: req.params.id });
     }
     res.json({ success: true, message: "Project deleted from MongoDB" });
-  } catch (err) {
+  } catch (err: any) {
+    console.error("❌ Error deleting project from MongoDB:", err.message || err);
     res.status(500).json({ success: false, message: "Failed to delete project" });
   }
 });

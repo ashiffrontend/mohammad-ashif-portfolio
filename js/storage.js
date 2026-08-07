@@ -582,7 +582,7 @@ class LocalStorageEngine {
           // Sync new real projects if old dummy data exists or if list is incomplete
           try {
             const current = JSON.parse(localStorage.getItem(storageKey));
-            if (!Array.isArray(current) || current.length < 10 || current.some(p => p.id === 'p1' || p.title.includes('Vercel-Style') || p.title.includes('Apple Glassmorphic') || !p.likes)) {
+            if (!Array.isArray(current) || current.length === 0 || current.some(p => p.id === 'p1' || p.title.includes('Vercel-Style') || p.title.includes('Apple Glassmorphic'))) {
               localStorage.setItem(storageKey, JSON.stringify(SEED_DATA.projects));
             }
           } catch(e) {}

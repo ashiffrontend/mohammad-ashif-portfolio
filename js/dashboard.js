@@ -275,7 +275,7 @@ function openProjectModal(projectId = null) {
     });
   }
 
-  document.getElementById('project-form')?.addEventListener('submit', (e) => {
+  document.getElementById('project-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('project-id').value || 'p_' + Date.now();
     const rawFeatures = document.getElementById('p-features').value;
@@ -295,23 +295,72 @@ function openProjectModal(projectId = null) {
       featured: document.getElementById('p-featured').checked
     };
 
-    let allProjects = window.ashifStorage.getProjects();
-    const existingIdx = allProjects.findIndex(item => item.id === id);
-    if (existingIdx >= 0) {
-      allProjects[existingIdx] = newProject;
-    } else {
-      allProjects.unshift(newProject);
+    const token = localStorage.getItem('ashif_jwt_token');
+    const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.API_BASE || '');
+
+    try {
+      const res = await fetch(`${apiBase}/api/projects`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
+        body: JSON.stringify(newProject)
+      });
+      const data = await res.json();
+      if (data.success && data.data) {
+        let allProjects = window.ashifStorage.getProjects();
+        const existingIdx = allProjects.findIndex(item => item.id === id);
+        if (existingIdx >= 0) {
+          allProjects[existingIdx] = data.data;
+        } else {
+          allProjects.unshift(data.data);
+        }
+        window.ashifStorage.saveProjects(allProjects);
+      } else {
+        let allProjects = window.ashifStorage.getProjects();
+        const existingIdx = allProjects.findIndex(item => item.id === id);
+        if (existingIdx >= 0) {
+          allProjects[existingIdx] = newProject;
+        } else {
+          allProjects.unshift(newProject);
+        }
+        window.ashifStorage.saveProjects(allProjects);
+      }
+    } catch (err) {
+      console.warn('Backend project save error, storing locally:', err);
+      let allProjects = window.ashifStorage.getProjects();
+      const existingIdx = allProjects.findIndex(item => item.id === id);
+      if (existingIdx >= 0) {
+        allProjects[existingIdx] = newProject;
+      } else {
+        allProjects.unshift(newProject);
+      }
+      window.ashifStorage.saveProjects(allProjects);
     }
 
-    window.ashifStorage.saveProjects(allProjects);
     overlay.classList.remove('show');
     if (window.showToast) window.showToast('Project saved successfully!', 'success');
     renderAdminDashboardViews();
   });
 }
 
-function deleteProject(id) {
+async function deleteProject(id) {
   if (confirm('Are you sure you want to delete this project?')) {
+    const token = localStorage.getItem('ashif_jwt_token');
+    const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.API_BASE || '');
+
+    try {
+      await fetch(`${apiBase}/api/projects/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : ''
+        }
+      });
+    } catch (err) {
+      console.warn('Backend project delete error:', err);
+    }
+
     let projects = window.ashifStorage.getProjects();
     projects = projects.filter(p => p.id !== id);
     window.ashifStorage.saveProjects(projects);
